@@ -1,0 +1,27 @@
+Készítsünk programot, amely egy számítástechnikai termékekkel foglalkozó cég árukészletét és rendeléseit kezeli.
+ A programot használhatják az alkalmazottak és a vevők is, de az egyszerűség kedvéért elegendő egy közös felhasználói
+ felületet készíteni.
+
+    A program jelenítse meg kategóriánként a termékeket (gyártó, típus, leírás, ár, raktárkészlet, aktív-e), 
+    valamint legyen lehetőség az aktív termékek raktárkészletének növelésére.
+
+    Legyen lehetőség új termék felvitelére az előbb leírt tulajdonságok mindegyikének megadásával,
+    ám a raktárkészlet kezdetben mindig 0 legyen.
+
+    Amennyiben egy termék hosszabb távon nem hozzáférhető, lehessen inaktívvá tenni. Később természetesen lehessen újra aktívvá tenni is.
+    A program jelenítse meg a még nem teljesített rendeléseket (dátum, név, cím, telefonszám, email cím, összérték),
+    és mindegyiknél jelezze, hogy a rendelés teljesíthető-e - azaz rendelkezésre áll-e a termékeknél a kellő raktárkészlet,
+    figyelembe véve a megrendelt darabszámokat és az aktivitásokat is.
+    A teljesíthető megrendeléseket lehessen teljesíteni azok kiválasztásával. 
+    Teljesítéskor a program kérjen megerősítést, majd automatikusan módosítsa a raktárkészletet is.
+    A teljesített megrendelések többé ne legyenek láthatóak.
+    Legyen lehetőség új megrendelés leadására a név, a cím, a telefonszám és az email cím megadásával, 
+    valamint a megrendelni kívánt termékek felsorolásával. Egy adott termékből egyszerre több darabot is lehessen rendelni. 
+    Csak az aktív termékek közül lehessen válogatni.
+
+Az adatbázis az alábbi adatokat tárolja (ezek még nem feltétlenül a fizikai adattáblák):
+
+    Kategóriák: név;
+    Termékek: gyártó, típus, leírás, kategória, ár, raktárkészlet, aktív-e;
+    Rendelések: név, cím, telefonszám, email cím, termékek listája, teljesített-e.
+
