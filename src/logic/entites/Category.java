@@ -64,7 +64,11 @@ public class Category implements Serializable, IEntity {
 
     @Override
     public String toString() {
-        return "logic.entites.Category[ id=" + id + " ]";
+        return name;
+    }
+    
+    public static String[] getPropetyNames() {
+        return new String[]{"név"};
     }
 
     @Override
@@ -82,6 +86,7 @@ public class Category implements Serializable, IEntity {
         switch (columnIndex) {
             case 0:
                 this.name = (String) value;
+                break;
         }
     }
 
