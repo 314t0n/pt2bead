@@ -21,9 +21,18 @@ import logic.IEntity;
 public class Product implements Serializable, IEntity {
 
     private static final long serialVersionUID = 1L;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    /**
+     * raktárkészlet kezdetben mindig 0 legyen
+     */
+    public Product() {
+        stock = 0;
+    }
 
     public Long getId() {
         return id;
@@ -124,6 +133,10 @@ public class Product implements Serializable, IEntity {
         return "logic.entites.Product[ id=" + id + " ]";
     }
 
+    public static String[] getPropertyNames() {
+        return new String[]{"gyártó", "típus", "leírás", "kategória", "ár", "raktárkészlet", "aktív-e"};
+    }   
+
     @Override
     public Object get(int columnIndex) {
         switch (columnIndex) {
@@ -133,7 +146,7 @@ public class Product implements Serializable, IEntity {
                 return this.type;
             case 2:
                 return this.description;
-            case 3:
+            case 3:                
                 return this.category;
             case 4:
                 return this.price;
@@ -142,6 +155,7 @@ public class Product implements Serializable, IEntity {
             case 6:
                 return this.active;
             default:
+                System.out.println(columnIndex);
                 return null;
         }
     }
@@ -152,18 +166,25 @@ public class Product implements Serializable, IEntity {
         switch (columnIndex) {
             case 0:
                 this.manufacturer = (String) value;
+                break;
             case 1:
                 this.type = (String) value;
+                break;
             case 2:
                 this.description = (String) value;
+                break;
             case 3:
                 this.category = (Category) value;
+                break;
             case 4:
                 this.price = (Integer) value;
+                break;
             case 5:
                 this.stock = (Integer) value;
+                break;
             case 6:
                 this.active = (boolean) value;
+                break;
         }
     }
 

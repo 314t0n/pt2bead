@@ -9,4 +9,5 @@ public interface IEntity {
     public Object get(int columnIndex);
 
     public void set(int columnIndex, Object value);
+
 }

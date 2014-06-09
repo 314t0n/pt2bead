@@ -1,19 +1,20 @@
 package progtech2;
 
-import logic.GenericDAO;
-import logic.entites.Category;
+import gui.MainFrame;
+import java.awt.EventQueue;
 
 public class Main {
 
   
-    public static void main(String[] args) {
+    public static void main(String[] args) {        
+        
+         EventQueue.invokeLater(new Runnable() {
 
-        //GenericDAO dao = new GenericDAO(Category.class);
-        
-        //System.out.println(dao.rowCount());
-        
-        
-        
+            @Override
+            public void run() {
+                new MainFrame().setVisible(true);
+            }
+        });
     }
     
 }

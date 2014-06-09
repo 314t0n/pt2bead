@@ -67,6 +67,10 @@ public class Order implements Serializable, IEntity {
         return "logic.entites.Order[ id=" + id + " ]";
     }
 
+    public static String[] getPropetyNames() {
+        return new String[]{"név", "cím", "telefonszám", "email cím", "termékek listája", "teljesített-e"};
+    }
+
     //Rendelések: név, cím, telefonszám, email cím, termékek listája, teljesített-e.
     @Override
     public Object get(int columnIndex) {
@@ -93,17 +97,22 @@ public class Order implements Serializable, IEntity {
         switch (columnIndex) {
             case 0:
                 this.name = (String) value;
+                break;
             case 1:
                 this.address = (String) value;
+                break;
             case 2:
                 this.number = (String) value;
+                break;
             case 3:
                 this.email = (String) value;
+                break;
             case 4:
                 this.product = (Product) value;
+                break;
             case 5:
                 this.fullfilled = (boolean) value;
-
+                break;
         }
     }
 
