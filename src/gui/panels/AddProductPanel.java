@@ -1,5 +1,6 @@
 package gui.panels;
 
+import gui.MainFrame;
 import java.awt.GridLayout;
 import java.util.List;
 import javax.swing.JCheckBox;
@@ -11,7 +12,7 @@ import logic.IEntity;
 import logic.entites.Category;
 import logic.entites.Product;
 
-public class AddProductPanel extends AddPanel{
+public class AddProductPanel extends AddPanel {
 
     private JTextField manufacturer;
     private JTextField type;
@@ -62,10 +63,14 @@ public class AddProductPanel extends AddPanel{
 
     @Override
     public void setAttributes() {
-        product.setActive(active.isSelected());
-        product.setType(type.getText());
-        product.setDescription(description.getText());
-        product.setManufacturer(manufacturer.getText());
+       
+            product.setActive(active.isSelected());
+            product.setType(type.getText());
+            product.setDescription(description.getText());
+            product.setManufacturer(manufacturer.getText());
+            product.setPrice(Integer.parseInt(price.getText()));
+            product.setCategory(categories.get(categoryList.getSelectedIndex()));
+        
     }
 
 }

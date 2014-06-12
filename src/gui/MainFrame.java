@@ -4,6 +4,7 @@ import gui.dialogs.FormDialog;
 import gui.panels.AddCategoryPanel;
 import gui.panels.AddProductPanel;
 import gui.tablemodels.GenericTableModel;
+import gui.tablemodels.TableModelFactory;
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
@@ -25,8 +27,14 @@ import logic.entites.Product;
 
 public class MainFrame extends JFrame {
 
+    public static void showError(String message) {
+        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private CrudAction productAction;
+    
     private GenericTableModel<Product, GenericDAO<Product>> productTableModel;
-    private TableRowSorter<GenericTableModel<Product, GenericDAO<Product>>> productSorter;
+    private TableRowSorter<GenericTableModel<Product, GenericDAO<Product>>> productTableSorter;
 
     public MainFrame() throws HeadlessException {
 
@@ -39,25 +47,30 @@ public class MainFrame extends JFrame {
 
         getContentPane().add(jToolBar, BorderLayout.NORTH);
         
+        productAction = new CrudAction(this, productTableModel);
+
         setMenu();
 
-        setProductTable();
+        setProductTable();       
+        
+        
     }
 
     private void setProductTable() {
-        try{
-        JTable productTable = new JTable();
-        
-        productTableModel = new GenericTableModel(new GenericDAO(Product.class), Product.getPropertyNames());
-        productSorter = new TableRowSorter<>(productTableModel);
+        try {
+            JTable productTable = new JTable();
 
-        productTableModel.setColumnEditAble(2);
+            //productTableModel = new GenericTableModel(new GenericDAO(Product.class), Product.getPropertyNames());
+            productTableModel = TableModelFactory.getTableModel("PRODUCT");
+            productTableSorter = new TableRowSorter<>(productTableModel);
 
-        productTable.setRowSorter(productSorter);
-        productTable.setModel(productTableModel);
+            productTableModel.setColumnEditAble(2);
 
-        getContentPane().add(new JScrollPane(productTable), BorderLayout.CENTER);
-        }catch(Exception ex){
+            productTable.setRowSorter(productTableSorter);
+            productTable.setModel(productTableModel);
+         
+            getContentPane().add(new JScrollPane(productTable), BorderLayout.CENTER);
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -77,7 +90,7 @@ public class MainFrame extends JFrame {
         JMenuBar jMenuBar = new JMenuBar();
         JMenu mainMenu = new JMenu("File");
 
-        JMenuItem addProduct = new JMenuItem(addProductAction);
+        JMenuItem addProduct = new JMenuItem(productAction.getCreateAction());
         JMenuItem addCategory = new JMenuItem(addCategoryAction);
         JMenuItem close = new JMenuItem(closeAction);
 
@@ -91,27 +104,6 @@ public class MainFrame extends JFrame {
 
     }
 
-    private Action addProductAction = new AbstractAction("Új termék") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            Product product = new Product();
-
-            AddProductPanel addProductPanel = new AddProductPanel(product, categoryController.readAll());
-            FormDialog formDialog = new FormDialog(MainFrame.this, enabled, addProductPanel);
-
-            if (formDialog.isSave()) {
-
-                addProductPanel.setAttributes();
-
-                Logger.log("Adatok mentése", "DEBUG");
-
-                productController.create(product);
-
-            }
-
-        }
-    };
 
     private Action addCategoryAction = new AbstractAction("Új kategória") {
         @Override
@@ -122,17 +114,13 @@ public class MainFrame extends JFrame {
             AddCategoryPanel addCategoryPanel = new AddCategoryPanel(category);
             FormDialog formDialog = new FormDialog(MainFrame.this, enabled, addCategoryPanel);
 
-            if (formDialog.isSave()) {
+            if (formDialog.isSaveRequired()) {
 
                 Logger.log("Adatok mentése", "DEBUG");
 
                 addCategoryPanel.setAttributes();
 
-                if (category != null) {
-
-                    categoryController.create(category);
-
-                }
+                categoryController.create(category);
 
             }
 

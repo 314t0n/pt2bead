@@ -32,6 +32,7 @@ public class Product implements Serializable, IEntity {
      */
     public Product() {
         stock = 0;
+        price = 0;
     }
 
     public Long getId() {

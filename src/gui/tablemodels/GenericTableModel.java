@@ -5,6 +5,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import logic.CrudService;
 import logic.IEntity;
+import logic.entites.Product;
 import org.eclipse.persistence.exceptions.DatabaseException;
 
 public class GenericTableModel<T extends IEntity, S extends CrudService<T>> extends AbstractTableModel {
@@ -51,8 +52,18 @@ public class GenericTableModel<T extends IEntity, S extends CrudService<T>> exte
     }
 
     @Override
-    public Class<?> getColumnClass(int columnIndex) {       
-        return (getRowCount() > 0) ? items.get(0).get(columnIndex).getClass() : null;
+    public Class<?> getColumnClass(int columnIndex) {
+        
+        try {
+            return (getRowCount() > 0) ? items.get(0).get(columnIndex).getClass() : null;
+        } catch (NullPointerException ex) {
+            System.out.println(columnIndex);
+            System.out.println(Product.getPropertyNames()[columnIndex]);            
+            System.out.println(items.get(0).get(columnIndex));
+            ex.printStackTrace();
+        }
+        return null;
+
     }
 
     @Override
@@ -70,7 +81,7 @@ public class GenericTableModel<T extends IEntity, S extends CrudService<T>> exte
             fireTableCellUpdated(rowIndex, columnIndex);
         } catch (DatabaseException ex) {
             System.err.println(ex.getMessage());
-        }catch(Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
