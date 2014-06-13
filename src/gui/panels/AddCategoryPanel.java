@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import logic.Strings;
 import logic.entites.Category;
 
 public class AddCategoryPanel extends AddPanel {
@@ -13,7 +14,7 @@ public class AddCategoryPanel extends AddPanel {
 
     public AddCategoryPanel(Category category) {
 
-        setName("Új kategória");
+        setName(Strings.NEW_CATEGORY);
         GridLayout layout = new GridLayout(1, 0);
         setLayout(layout);
 

@@ -8,16 +8,22 @@ import gui.panels.AddCategoryPanel;
 import gui.tablemodels.GenericTableModel;
 import gui.tablemodels.TableModelFactory;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
@@ -36,12 +42,20 @@ public class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    private final JTabbedPane jTabbedPane;
+    private final JPanel productPanel;
+    private final JPanel categoryPanel;
+    private final JPanel orderPanel;
+
     private ICrudServiceAction productAction;
     private ICrudServiceAction orderAction;
+    private ICrudServiceAction categoryAction;
 
     private GenericTableModel<Product, GenericDAO<Product>> productTableModel;
+    private GenericTableModel<Product, GenericDAO<Product>> categoryTableModel;
     private GenericTableModel<Order, GenericDAO<Order>> orderTableModel;
     private TableRowSorter<GenericTableModel<Product, GenericDAO<Product>>> productTableSorter;
+    private TableRowSorter<GenericTableModel<Order, GenericDAO<Order>>> categoryTableSorter;
     private TableRowSorter<GenericTableModel<Order, GenericDAO<Order>>> orderTableSorter;
 
     public MainFrame() throws HeadlessException {
@@ -51,24 +65,69 @@ public class MainFrame extends JFrame {
         setLocation(40, 60);
         setSize(700, 300);
         setLayout(new BorderLayout());
+
         JToolBar jToolBar = new JToolBar();
+        jTabbedPane = new JTabbedPane();
+        productPanel = new JPanel();
+        categoryPanel = new JPanel();
+        orderPanel = new JPanel();
+
+        productAction = new ProductCrudAction(this, productTableModel);
+        categoryAction = new CategoryCrudAction(this, categoryTableModel);
+        orderAction = new OrderCrudAction(this, orderTableModel);
 
         getContentPane().add(jToolBar, BorderLayout.NORTH);
 
-        productAction = new ProductCrudAction(this, productTableModel);
-        orderAction = new OrderCrudAction(this, orderTableModel);
-
+        setControllerPanels();
+        
         setMenu();
 
-        if (DataSource.getInstance().getController("PRODUCT").rowCount() > 0) {
-            setProductTable();
-        }
+        setProductTable();
 
         if (DataSource.getInstance().getController("ORDER").rowCount() > 0) {
             setOrderable();
         }
 
+        jTabbedPane.addTab(Strings.PRODUCT, new JScrollPane(productPanel));
+        jTabbedPane.addTab(Strings.ORDER, new JScrollPane(orderPanel));
+        jTabbedPane.addTab(Strings.CATEGORY, new JScrollPane(categoryPanel));
+
+        getContentPane().add(new JScrollPane(jTabbedPane), BorderLayout.CENTER);
     }
+
+    private void setControllerPanels() {
+        
+        setControllPanel(productPanel, productAction);
+        setControllPanel(categoryPanel, categoryAction);
+        setControllPanel(orderPanel, orderAction);
+        
+    }
+
+    private void setControllPanel(JPanel panel, ICrudServiceAction action) {
+
+        GridLayout layout = new GridLayout(2, 1);
+
+        panel.setLayout(layout);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+
+        JButton btn1 = new JButton(Strings.NEW);
+        JButton btn2 = new JButton(Strings.DEL);
+        JButton btn3 = new JButton(Strings.MOD);
+
+        buttonPanel.add(btn1);
+        buttonPanel.add(btn2);
+        buttonPanel.add(btn3);
+
+        btn1.setAction(action.getCreateAction());
+        btn2.setAction(action.getDeleteAction());
+        btn3.setAction(action.getUpdateAction());
+
+        panel.add(buttonPanel);
+
+    }
+
     //ez is mehetni a factoryba
     private void setProductTable() {
 
@@ -77,14 +136,15 @@ public class MainFrame extends JFrame {
             JTable productTable = new JTable();
 
             productTableModel = TableModelFactory.getTableModel("PRODUCT");
-            productTableSorter = new TableRowSorter<>(productTableModel);
+            productTableSorter = new TableRowSorter(productTableModel);
 
-            productTableModel.setColumnEditAble(2);
+            //productTableModel.setColumnEditAble(2);        
 
-            productTable.setRowSorter(productTableSorter);
-            productTable.setModel(productTableModel);
+              productTable.setModel(productTableModel);
+            productTable.setRowSorter(productTableSorter);            
+          
 
-            getContentPane().add(new JScrollPane(productTable), BorderLayout.CENTER);
+            productPanel.add(productTable, BorderLayout.CENTER);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -106,8 +166,6 @@ public class MainFrame extends JFrame {
             orderTable.setRowSorter(orderTableSorter);
             orderTable.setModel(orderTableModel);
 
-            getContentPane().add(new JScrollPane(orderTable), BorderLayout.CENTER);
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -121,7 +179,7 @@ public class MainFrame extends JFrame {
 
         JMenuItem addProduct = new JMenuItem(productAction.getCreateAction());
         JMenuItem addOrder = new JMenuItem(orderAction.getCreateAction());
-        JMenuItem addCategory = new JMenuItem(addCategoryAction);
+        JMenuItem addCategory = new JMenuItem(categoryAction.getCreateAction());
         JMenuItem close = new JMenuItem(closeAction);
 
         mainMenu.add(addProduct);
@@ -134,28 +192,6 @@ public class MainFrame extends JFrame {
         setJMenuBar(jMenuBar);
 
     }
-
-    private Action addCategoryAction = new AbstractAction("Új kategória") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            Category category = new Category();
-
-            AddCategoryPanel addCategoryPanel = new AddCategoryPanel(category);
-            FormDialog formDialog = new FormDialog(MainFrame.this, enabled, addCategoryPanel);
-
-            if (formDialog.isSaveRequired()) {
-
-                Logger.log("Adatok mentése", "DEBUG");
-
-                addCategoryPanel.setAttributes();
-
-                DataSource.getInstance().getController("CATEGORY").create(category);
-
-            }
-
-        }
-    };
 
     private Action closeAction = new AbstractAction("Kilépés") {
         @Override

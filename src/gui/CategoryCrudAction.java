@@ -3,67 +3,57 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui.actions;
+package gui;
 
-import gui.MainFrame;
+import gui.actions.ICrudServiceAction;
 import gui.dialogs.FormDialog;
-import gui.panels.AddProductPanel;
+import gui.panels.AddCategoryPanel;
 import gui.tablemodels.GenericTableModel;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import logic.DataSource;
+import logic.GenericDAO;
 import logic.Logger;
 import logic.Strings;
-import logic.entites.Product;
+import logic.entites.Category;
 
-/**
- *
- * @author ag313w
- */
-public class OrderCrudAction implements ICrudServiceAction {
+public class CategoryCrudAction implements ICrudServiceAction {
 
+    private final GenericDAO<Category> categoryController;
     private final JFrame frame;
     private final GenericTableModel table;
 
-    public OrderCrudAction(JFrame frame, GenericTableModel table) {
+    public CategoryCrudAction(JFrame frame, GenericTableModel table) {
 
         this.frame = frame;
         this.table = table;
+
+        categoryController = new GenericDAO(Category.class);
 
     }
 
     @Override
     public Action getCreateAction() {
-        return new AbstractAction(Strings.NEW_ORDER) {
+        return new AbstractAction(Strings.NEW_CATEGORY) {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if (DataSource.getInstance().getController("CATEGORY").rowCount() > 0) {
+                Category category = new Category();
 
-                    Product product = new Product();
+                AddCategoryPanel addCategoryPanel = new AddCategoryPanel(category);
+                FormDialog formDialog = new FormDialog(frame, enabled, addCategoryPanel);
 
-                    AddProductPanel addProductPanel = new AddProductPanel(product, DataSource.getInstance().getController("ORDER").readAll());
-                    FormDialog formDialog = new FormDialog(frame, enabled, addProductPanel);
+                if (formDialog.isSaveRequired()) {
 
-                    if (formDialog.isSaveRequired()) {
+                    Logger.log("Adatok mentése", "DEBUG");
 
-                        addProductPanel.setAttributes();
+                    addCategoryPanel.setAttributes();
 
-                        Logger.log("Adatok mentése", "DEBUG");
-
-                        DataSource.getInstance().getController("ORDER").create(product);
-
-                        //table.fireTableRowsInserted(0, table.getColumnCount() - 1);
-                    }
-
-                } else {
-
-                    MainFrame.showError(Strings.ERROR_NO_PRODUCT);
+                    DataSource.getInstance().getController("CATEGORY").create(category);
 
                 }
-
             }
         };
     }

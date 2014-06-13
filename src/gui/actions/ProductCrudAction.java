@@ -75,12 +75,22 @@ public class ProductCrudAction implements ICrudServiceAction {
     
     @Override
     public Action getUpdateAction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+           return new AbstractAction(Strings.MOD) {
+             @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        };
     }
     
     @Override
     public Action getDeleteAction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new AbstractAction(Strings.DEL) {
+             @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        };
     }
     
 }

@@ -53,7 +53,7 @@ public class GenericTableModel<T extends IEntity, S extends CrudService<T>> exte
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        
+       
         try {
             return (getRowCount() > 0) ? items.get(0).get(columnIndex).getClass() : null;
         } catch (NullPointerException ex) {
@@ -65,6 +65,8 @@ public class GenericTableModel<T extends IEntity, S extends CrudService<T>> exte
         return null;
 
     }
+    
+    
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
