@@ -11,13 +11,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import logic.IEntity;
 
 /**
- *
- * @author D
+ * Order is reserved keyword
+ * 
  */
 @Entity
+@Table(name="Order_")
 public class Order implements Serializable, IEntity {
 
     private static final long serialVersionUID = 1L;
@@ -67,7 +69,7 @@ public class Order implements Serializable, IEntity {
         return "logic.entites.Order[ id=" + id + " ]";
     }
 
-    public static String[] getPropetyNames() {
+    public static String[] getPropertyNames() {
         return new String[]{"név", "cím", "telefonszám", "email cím", "termékek listája", "teljesített-e"};
     }
 

@@ -1,8 +1,10 @@
 package gui;
 
+import gui.actions.ICrudServiceAction;
+import gui.actions.OrderCrudAction;
+import gui.actions.ProductCrudAction;
 import gui.dialogs.FormDialog;
 import gui.panels.AddCategoryPanel;
-import gui.panels.AddProductPanel;
 import gui.tablemodels.GenericTableModel;
 import gui.tablemodels.TableModelFactory;
 import java.awt.BorderLayout;
@@ -20,9 +22,12 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import javax.swing.table.TableRowSorter;
+import logic.DataSource;
 import logic.GenericDAO;
 import logic.Logger;
+import logic.Strings;
 import logic.entites.Category;
+import logic.entites.Order;
 import logic.entites.Product;
 
 public class MainFrame extends JFrame {
@@ -31,14 +36,17 @@ public class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    private CrudAction productAction;
-    
+    private ICrudServiceAction productAction;
+    private ICrudServiceAction orderAction;
+
     private GenericTableModel<Product, GenericDAO<Product>> productTableModel;
+    private GenericTableModel<Order, GenericDAO<Order>> orderTableModel;
     private TableRowSorter<GenericTableModel<Product, GenericDAO<Product>>> productTableSorter;
+    private TableRowSorter<GenericTableModel<Order, GenericDAO<Order>>> orderTableSorter;
 
     public MainFrame() throws HeadlessException {
 
-        setTitle("Generic ZH");
+        setTitle(Strings.APP_NAME);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocation(40, 60);
         setSize(700, 300);
@@ -46,21 +54,28 @@ public class MainFrame extends JFrame {
         JToolBar jToolBar = new JToolBar();
 
         getContentPane().add(jToolBar, BorderLayout.NORTH);
-        
-        productAction = new CrudAction(this, productTableModel);
+
+        productAction = new ProductCrudAction(this, productTableModel);
+        orderAction = new OrderCrudAction(this, orderTableModel);
 
         setMenu();
 
-        setProductTable();       
-        
-        
-    }
+        if (DataSource.getInstance().getController("PRODUCT").rowCount() > 0) {
+            setProductTable();
+        }
 
+        if (DataSource.getInstance().getController("ORDER").rowCount() > 0) {
+            setOrderable();
+        }
+
+    }
+    //ez is mehetni a factoryba
     private void setProductTable() {
+
         try {
+
             JTable productTable = new JTable();
 
-            //productTableModel = new GenericTableModel(new GenericDAO(Product.class), Product.getPropertyNames());
             productTableModel = TableModelFactory.getTableModel("PRODUCT");
             productTableSorter = new TableRowSorter<>(productTableModel);
 
@@ -68,33 +83,49 @@ public class MainFrame extends JFrame {
 
             productTable.setRowSorter(productTableSorter);
             productTable.setModel(productTableModel);
-         
+
             getContentPane().add(new JScrollPane(productTable), BorderLayout.CENTER);
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
     }
 
-    private final GenericDAO<Product> productController = new GenericDAO(Product.class);
-    private final GenericDAO<Category> categoryController = new GenericDAO(Category.class);
+    private void setOrderable() {
 
-    /*
-    
-     MENU
-     AND ACTIONS 
-    
-     */
+        try {
+
+            JTable orderTable = new JTable();
+
+            orderTableModel = TableModelFactory.getTableModel("ORDER");
+            orderTableSorter = new TableRowSorter<>(orderTableModel);
+
+            orderTableModel.setColumnEditAble(2);
+
+            orderTable.setRowSorter(orderTableSorter);
+            orderTable.setModel(orderTableModel);
+
+            getContentPane().add(new JScrollPane(orderTable), BorderLayout.CENTER);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
     private void setMenu() {
 
         JMenuBar jMenuBar = new JMenuBar();
         JMenu mainMenu = new JMenu("File");
 
         JMenuItem addProduct = new JMenuItem(productAction.getCreateAction());
+        JMenuItem addOrder = new JMenuItem(orderAction.getCreateAction());
         JMenuItem addCategory = new JMenuItem(addCategoryAction);
         JMenuItem close = new JMenuItem(closeAction);
 
         mainMenu.add(addProduct);
+        mainMenu.add(addOrder);
         mainMenu.add(addCategory);
         mainMenu.addSeparator();
         mainMenu.add(close);
@@ -103,7 +134,6 @@ public class MainFrame extends JFrame {
         setJMenuBar(jMenuBar);
 
     }
-
 
     private Action addCategoryAction = new AbstractAction("Új kategória") {
         @Override
@@ -120,7 +150,7 @@ public class MainFrame extends JFrame {
 
                 addCategoryPanel.setAttributes();
 
-                categoryController.create(category);
+                DataSource.getInstance().getController("CATEGORY").create(category);
 
             }
 
