@@ -1,7 +1,8 @@
 package gui.dialogs;
 
 import gui.MainFrame;
-import gui.panels.AddPanel;
+import gui.panels.DialogPanel;
+import gui.tablemodels.GenericTableModel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,13 +14,13 @@ import javax.swing.JPanel;
 public class FormDialog extends JDialog implements ActionListener {
 
     private JPanel submitPanel;
-    private AddPanel addPanel;
+    private DialogPanel addPanel;
     protected JPanel formPanel;
     private JButton yesButton;
     private JButton noButton;
     private boolean answer;
 
-    public FormDialog(JFrame frame, boolean modal, AddPanel addPanel) {
+    public FormDialog(JFrame frame, boolean modal, DialogPanel addPanel) {
         super(frame, modal);
 
         this.submitPanel = new JPanel();
@@ -28,7 +29,7 @@ public class FormDialog extends JDialog implements ActionListener {
         setLayout(new BorderLayout());
         getContentPane().add(submitPanel, BorderLayout.SOUTH);
         getContentPane().add(addPanel, BorderLayout.CENTER);
-        
+
         this.answer = false;
         setButtons();
         pack();
@@ -67,4 +68,5 @@ public class FormDialog extends JDialog implements ActionListener {
     public boolean isSaveRequired() {
         return answer;
     }
+
 }

@@ -22,7 +22,6 @@ public class Product implements Serializable, IEntity {
 
     private static final long serialVersionUID = 1L;
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -134,9 +133,10 @@ public class Product implements Serializable, IEntity {
         return "logic.entites.Product[ id=" + id + " ]";
     }
 
-    public static String[] getPropertyNames() {
+    @Override
+    public String[] getPropertyNames() {
         return new String[]{"gyártó", "típus", "leírás", "kategória", "ár", "raktárkészlet", "aktív-e"};
-    }   
+    }
 
     @Override
     public Object get(int columnIndex) {
@@ -147,7 +147,7 @@ public class Product implements Serializable, IEntity {
                 return this.type;
             case 2:
                 return this.description;
-            case 3:                
+            case 3:
                 return this.category;
             case 4:
                 return this.price;

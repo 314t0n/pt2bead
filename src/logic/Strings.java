@@ -12,7 +12,7 @@ public class Strings {
     public static final String NEW_CATEGORY = "Új kategória";
     
     public static final String NEW = "Új";
-    public static final String DEL = "Törlése";
+    public static final String DEL = "Törlés";
     public static final String MOD = "Módosítás";
 
     public static final String ERROR_NO_PRODUCT = "Nem lehet rendelést felvenni : nincs egy termék sem.";

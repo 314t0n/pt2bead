@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package gui.actions;
 
 import gui.actions.ICrudServiceAction;
 import gui.dialogs.FormDialog;
@@ -52,6 +52,8 @@ public class CategoryCrudAction implements ICrudServiceAction {
                     addCategoryPanel.setAttributes();
 
                     DataSource.getInstance().getController("CATEGORY").create(category);
+                    
+                    table.fireTableDataChanged();
 
                 }
             }

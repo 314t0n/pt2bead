@@ -16,10 +16,10 @@ import logic.IEntity;
 
 /**
  * Order is reserved keyword
- * 
+ *
  */
 @Entity
-@Table(name="Order_")
+@Table(name = "Order_")
 public class Order implements Serializable, IEntity {
 
     private static final long serialVersionUID = 1L;
@@ -69,7 +69,8 @@ public class Order implements Serializable, IEntity {
         return "logic.entites.Order[ id=" + id + " ]";
     }
 
-    public static String[] getPropertyNames() {
+    @Override
+    public String[] getPropertyNames() {
         return new String[]{"név", "cím", "telefonszám", "email cím", "termékek listája", "teljesített-e"};
     }
 

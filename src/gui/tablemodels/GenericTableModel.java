@@ -16,7 +16,7 @@ public class GenericTableModel<T extends IEntity, S extends CrudService<T>> exte
     private final boolean[] isEditAbleColumn;
 
     public GenericTableModel(S source, String[] columnNames) {
-        this.source = source;
+        this.source = source;        
         this.columnNames = columnNames;
         this.isEditAbleColumn = new boolean[columnNames.length];
         this.items = new ArrayList();
@@ -53,20 +53,15 @@ public class GenericTableModel<T extends IEntity, S extends CrudService<T>> exte
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-       
+
         try {
             return (getRowCount() > 0) ? items.get(0).get(columnIndex).getClass() : null;
-        } catch (NullPointerException ex) {
-            System.out.println(columnIndex);
-            System.out.println(Product.getPropertyNames()[columnIndex]);            
-            System.out.println(items.get(0).get(columnIndex));
+        } catch (NullPointerException ex) {           
             ex.printStackTrace();
         }
         return null;
 
     }
-    
-    
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {

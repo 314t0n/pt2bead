@@ -10,4 +10,6 @@ public interface IEntity {
 
     public void set(int columnIndex, Object value);
 
+    public String[] getPropertyNames();
+
 }

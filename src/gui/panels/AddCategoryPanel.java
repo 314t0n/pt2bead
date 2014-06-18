@@ -4,10 +4,11 @@ import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import logic.IEntity;
 import logic.Strings;
 import logic.entites.Category;
 
-public class AddCategoryPanel extends AddPanel {
+public class AddCategoryPanel extends DialogPanel {
 
     private JTextField name;
     private Category category;
@@ -35,6 +36,11 @@ public class AddCategoryPanel extends AddPanel {
     @Override
     public void setAttributes() {
         category.setName(name.getText());
+    }
+
+    @Override
+    public IEntity getModel() {
+        return category;
     }
 
 }

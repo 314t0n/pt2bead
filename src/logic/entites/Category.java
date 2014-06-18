@@ -20,6 +20,7 @@ import logic.IEntity;
 public class Category implements Serializable, IEntity {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -66,8 +67,9 @@ public class Category implements Serializable, IEntity {
     public String toString() {
         return name;
     }
-    
-    public static String[] getPropetyNames() {
+
+    @Override
+    public String[] getPropertyNames() {
         return new String[]{"név"};
     }
 
@@ -89,5 +91,6 @@ public class Category implements Serializable, IEntity {
                 break;
         }
     }
+
 
 }

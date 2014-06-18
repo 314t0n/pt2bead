@@ -54,6 +54,8 @@ public class OrderCrudAction implements ICrudServiceAction {
                         Logger.log("Adatok mentése", "DEBUG");
 
                         DataSource.getInstance().getController("ORDER").create(product);
+                        
+                        table.fireTableDataChanged();
 
                         //table.fireTableRowsInserted(0, table.getColumnCount() - 1);
                     }
