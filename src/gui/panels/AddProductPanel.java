@@ -48,6 +48,7 @@ public class AddProductPanel extends DialogPanel {
         description = new JTextField("leírás", 25);
         active = new JCheckBox("aktív", true);
         price = new JTextField("ár", 5);
+        price.setText("2");
         categoryList = new JComboBox(categories.toArray());
 
         add(manufacturer);

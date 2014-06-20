@@ -1,14 +1,12 @@
 package gui;
 
-import gui.actions.CreateProductListener;
-import gui.actions.ProductCrudAction;
+import gui.actions.ICrudServiceAction;
 import gui.tablemodels.GenericTableModel;
 import gui.tablemodels.TableModelFactory;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,80 +17,97 @@ import logic.CrudService;
 import logic.IEntity;
 import logic.Strings;
 
+/**
+ * JPanel alapvető szerkesztési feladatokhoz.
+ *
+ * Tartalmaz:
+ *
+ * felvétel, szerkeszt, töröl gombokat, táblázatot amiben megjelennek az adatok.
+ *
+ * @author ag313w
+ * @param <T> IEntity típus
+ * @param <S> CrudService típus
+ */
 public class BasicEditor<T extends IEntity, S extends CrudService<T>> extends JPanel {
-
+    
     private final JPanel mainPanel;
     private GenericTableModel<T, S> tableModel;
     private TableRowSorter<GenericTableModel> tableSorter;
     private final JFrame parentFrame;
     private final IEntity entity;
+    private final JTable table;
+    private final JPanel buttonPanel;
 
-    public BasicEditor(IEntity entity, JFrame parentFrame) {
+    /**
+     *
+     * @param entity Konkrét entitás példány.
+     * @param parentFrame szülő
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public BasicEditor(IEntity entity, JFrame parentFrame) throws InstantiationException, IllegalAccessException {
         super();
-
+        
         this.parentFrame = parentFrame;
         this.mainPanel = new JPanel();
         this.entity = entity;
-        try {
-            this.tableModel = TableModelFactory.createTableModel(entity.getClass(), entity.getPropertyNames());
-        } catch (InstantiationException ex) {
-            Logger.getLogger(BasicEditor.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(BasicEditor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        setControllPanel(mainPanel);
-
+        this.tableModel = TableModelFactory.createTableModel(entity.getClass(), entity.getPropertyNames());
+        this.table = new JTable();
+        this.buttonPanel = new JPanel();
+        
+        setMainPanel();
+        
         setTable();
+        
+    }
 
+    /**
+     * Beállít egy layout-t a gomboknak
+     *
+     */
+    private void setMainPanel() {
+        
+        BorderLayout layout = new BorderLayout();
+        
+        mainPanel.setLayout(layout);
+        
+        buttonPanel.setLayout(new FlowLayout());
+        
+        mainPanel.add(buttonPanel, BorderLayout.NORTH);
+        
         this.add(mainPanel);
     }
 
-    protected void setControllPanel(JPanel panel) {
-
-        ProductCrudAction productAction = new ProductCrudAction(parentFrame, tableModel);
-
-        BorderLayout layout = new BorderLayout();
-
-        panel.setLayout(layout);
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout());
-
-        JButton btn1 = new JButton(Strings.NEW);
-        JButton btn2 = new JButton(Strings.DEL);
-        JButton btn3 = new JButton(Strings.MOD);
-
-        buttonPanel.add(btn1);
-        buttonPanel.add(btn2);
-        buttonPanel.add(btn3);
-
-        btn1.setAction(productAction.getCreateAction());
-        //btn2.setAction(deleteAction);
-        //btn3.setAction(updateAction);
-
-        panel.add(buttonPanel, BorderLayout.NORTH);
-
-    }
-
+    /**
+     * Táblázat felvétele és a főpanelhez adása.
+     */
     private void setTable() {
-
+        
         try {
-
-            JTable table = new JTable();
-
+            
             tableSorter = new TableRowSorter(tableModel);
-
+            
             table.setModel(tableModel);
             table.setRowSorter(tableSorter);
             table.setAutoCreateRowSorter(true);
             mainPanel.add(new JScrollPane(table), BorderLayout.CENTER);
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        
     }
-
-    protected Action createAction;
-
+    
+    public void addButton(JButton button) {
+        buttonPanel.add(button);
+    }
+    
+    public JTable getTable() {
+        return table;
+    }
+    
+    public JFrame getParentFrame() {
+        return parentFrame;
+    }
+    
 }

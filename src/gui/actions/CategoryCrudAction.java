@@ -5,33 +5,22 @@
  */
 package gui.actions;
 
-import gui.actions.ICrudServiceAction;
 import gui.dialogs.FormDialog;
 import gui.panels.AddCategoryPanel;
-import gui.tablemodels.GenericTableModel;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
-import logic.DataSource;
-import logic.GenericDAO;
 import logic.Logger;
 import logic.Strings;
 import logic.entites.Category;
 
 public class CategoryCrudAction implements ICrudServiceAction {
 
-    private final GenericDAO<Category> categoryController;
     private final JFrame frame;
-    private final GenericTableModel table;
 
-    public CategoryCrudAction(JFrame frame, GenericTableModel table) {
-
+    public CategoryCrudAction(JFrame frame) {
         this.frame = frame;
-        this.table = table;
-
-        categoryController = new GenericDAO(Category.class);
-
     }
 
     @Override
@@ -50,10 +39,6 @@ public class CategoryCrudAction implements ICrudServiceAction {
                     Logger.log("Adatok mentése", "DEBUG");
 
                     addCategoryPanel.setAttributes();
-
-                    DataSource.getInstance().getController("CATEGORY").create(category);
-                    
-                    table.fireTableDataChanged();
 
                 }
             }

@@ -1,41 +1,50 @@
 package gui.actions;
 
+import gui.BasicEditor;
 import gui.MainFrame;
 import gui.dialogs.FormDialog;
 import gui.panels.AddProductPanel;
 import gui.tablemodels.GenericTableModel;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import javax.swing.JButton;
 import logic.DataSource;
 import logic.GenericDAO;
 import logic.Logger;
 import logic.Strings;
 import logic.entites.Product;
 
-public class ProductCrudAction implements ICrudServiceAction {
+/**
+ * A read egyelőre nincs megvalósítva, mivel a táblázat minden adatot
+ * megjelenít.
+ *
+ * @author ag313w
+ */
+public class ProductCrudAction extends BasicAction implements ICrudServiceAction {
 
-    private final JFrame frame;
-    private final GenericTableModel<Product, GenericDAO<Product>> table;
+    public ProductCrudAction(BasicEditor editor) {
+        super(editor);
 
-    /**
-     * @todo category injection
-     * @param frame
-     * @param table
-     */
-    public ProductCrudAction(JFrame frame, GenericTableModel table) {
-
-        this.frame = frame;
-        this.table = table;
-
-        if (table == null) {
-            System.out.println("table null");
-        }
-
+        addButtons();
     }
-   
+
+    private void addButtons() {
+
+        JButton jButtonCreate = new JButton(Strings.NEW_PRODUCT);
+  
+        jButtonCreate.setAction(getCreateAction());
+
+        editor.addButton(jButtonCreate);
+
+        JButton jButtonDelete = new JButton(Strings.DEL);
+
+        jButtonDelete.setAction(getDeleteAction());
+
+        editor.addButton(jButtonDelete);
+    }
+
     @Override
     public Action getCreateAction() {
         return new AbstractAction(Strings.NEW_PRODUCT) {
@@ -47,7 +56,7 @@ public class ProductCrudAction implements ICrudServiceAction {
                     Product product = new Product();
 
                     AddProductPanel addProductPanel = new AddProductPanel(product, DataSource.getInstance().getController("CATEGORY").readAll());
-                    FormDialog formDialog = new FormDialog(frame, enabled, addProductPanel);
+                    FormDialog formDialog = new FormDialog(editor.getParentFrame(), enabled, addProductPanel);
 
                     if (formDialog.isSaveRequired()) {
 
@@ -55,7 +64,7 @@ public class ProductCrudAction implements ICrudServiceAction {
 
                         Logger.log(Strings.SAVE_DATA, "DEBUG");
 
-                        table.create((Product) addProductPanel.getModel());
+                        ((GenericTableModel<Product, GenericDAO<Product>>) editor.getTable().getModel()).create((Product) addProductPanel.getModel());
 
                     }
 
@@ -88,7 +97,27 @@ public class ProductCrudAction implements ICrudServiceAction {
         return new AbstractAction(Strings.DEL) {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
 
+                    int[] rows = editor.getTable().getSelectedRows();
+
+                
+                    for (int i = 0; i < rows.length; i++) {
+                        System.out.println(rows[i]);
+                        rows[i] = editor.getTable().convertRowIndexToModel(rows[i]);
+                        System.out.println(rows[i]);
+                    }
+
+                    for (int i = 0; i < rows.length; i++) {
+
+                        int deleteIndex = rows[i];
+                        ((GenericTableModel<Product, GenericDAO<Product>>) editor.getTable().getModel()).delete(deleteIndex);
+
+                    }
+
+                } catch (ArrayIndexOutOfBoundsException ex) {
+                    //nem volt kijelölve semmi
+                }
             }
         };
     }

@@ -4,8 +4,23 @@ import logic.DataSource;
 import logic.GenericDAO;
 import logic.IEntity;
 
+/**
+ * Generikus táblák létrehozása.
+ * 
+ * @author ag313w
+ */
 public class TableModelFactory {
 
+    /**
+     * Adott IEntity-t megvalósító osztályhoz generikus tábla model.
+     * 
+     * @param <T> IEntity
+     * @param type Konkrét IEntity-t megvalósító osztály
+     * @param propeties Az osztályhoz tartozó propeties.
+     * @return GenericTableModel az adott IEntity-hez.
+     * @throws InstantiationException
+     * @throws IllegalAccessException 
+     */
     public static <T extends IEntity> GenericTableModel createTableModel(Class<T> type, String[] propeties) throws InstantiationException, IllegalAccessException {
         return new GenericTableModel(new GenericDAO(type), propeties);
     }

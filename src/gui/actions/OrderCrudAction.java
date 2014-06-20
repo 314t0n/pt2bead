@@ -8,7 +8,6 @@ package gui.actions;
 import gui.MainFrame;
 import gui.dialogs.FormDialog;
 import gui.panels.AddProductPanel;
-import gui.tablemodels.GenericTableModel;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -25,12 +24,10 @@ import logic.entites.Product;
 public class OrderCrudAction implements ICrudServiceAction {
 
     private final JFrame frame;
-    private final GenericTableModel table;
 
-    public OrderCrudAction(JFrame frame, GenericTableModel table) {
+    public OrderCrudAction(JFrame frame) {
 
         this.frame = frame;
-        this.table = table;
 
     }
 
@@ -52,10 +49,6 @@ public class OrderCrudAction implements ICrudServiceAction {
                         addProductPanel.setAttributes();
 
                         Logger.log("Adatok mentése", "DEBUG");
-
-                        DataSource.getInstance().getController("ORDER").create(product);
-                        
-                        table.fireTableDataChanged();
 
                         //table.fireTableRowsInserted(0, table.getColumnCount() - 1);
                     }

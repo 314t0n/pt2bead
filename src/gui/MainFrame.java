@@ -10,6 +10,7 @@ import gui.tablemodels.GenericTableModel;
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.util.logging.Level;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -45,16 +46,9 @@ public class MainFrame extends JFrame {
     private final JPanel categoryPanel;
     private final JPanel orderPanel;
 
-    private ICrudServiceAction productAction;
-    private ICrudServiceAction orderAction;
-    private ICrudServiceAction categoryAction;
-
-    private GenericTableModel<Product, GenericDAO<Product>> productTableModel;
-    private GenericTableModel<Product, GenericDAO<Product>> categoryTableModel;
-    private GenericTableModel<Order, GenericDAO<Order>> orderTableModel;
-    private TableRowSorter<GenericTableModel<Product, GenericDAO<Product>>> productTableSorter;
-    private TableRowSorter<GenericTableModel<Order, GenericDAO<Order>>> categoryTableSorter;
-    private TableRowSorter<GenericTableModel<Order, GenericDAO<Order>>> orderTableSorter;
+    private final ICrudServiceAction productAction;
+    private final ICrudServiceAction orderAction;
+    private final ICrudServiceAction categoryAction;
 
     public MainFrame() throws HeadlessException {
 
@@ -70,27 +64,40 @@ public class MainFrame extends JFrame {
         categoryPanel = new JPanel();
         orderPanel = new JPanel();
 
-        productAction = new ProductCrudAction(this, productTableModel);
-        categoryAction = new CategoryCrudAction(this, categoryTableModel);
-        orderAction = new OrderCrudAction(this, orderTableModel);
-
         getContentPane().add(jToolBar, BorderLayout.NORTH);
 
         setMenu();
-        
+
         Product product = new Product();
+        Order order = new Order();
+        Category category = new Category();
 
         BasicEditor<Product, GenericDAO<Product>> productEditor = null;
+        BasicEditor<Order, GenericDAO<Order>> orderEditor = null;
+        BasicEditor<Category, GenericDAO<Category>> categoryEditor = null;
 
-        productEditor = new BasicEditor(product, this);
+        try {
+
+            productEditor = new BasicEditor(product, this);
+            //orderEditor = new BasicEditor(order, orderAction, this);
+            //categoryEditor = new BasicEditor(category, categoryAction, this);
+
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
+
+        productAction = new ProductCrudAction(productEditor);
+        categoryAction = new CategoryCrudAction(this);
+        orderAction = new OrderCrudAction(this);
 
         jTabbedPane.addTab(Strings.PRODUCT, new JScrollPane(productEditor));
-        /*
-         jTabbedPane.addTab(Strings.PRODUCT, new JScrollPane(productPanel));
-         jTabbedPane.addTab(Strings.ORDER, new JScrollPane(orderPanel));
-         jTabbedPane.addTab(Strings.CATEGORY, new JScrollPane(categoryPanel));
-         */
+        jTabbedPane.addTab(Strings.ORDER, new JScrollPane(orderEditor));
+        jTabbedPane.addTab(Strings.CATEGORY, new JScrollPane(categoryEditor));        
+
         getContentPane().add(jTabbedPane, BorderLayout.CENTER);
+        
     }
 
     private void setMenu() {
@@ -98,14 +105,8 @@ public class MainFrame extends JFrame {
         JMenuBar jMenuBar = new JMenuBar();
         JMenu mainMenu = new JMenu("File");
 
-        JMenuItem addProduct = new JMenuItem(productAction.getCreateAction());
-        JMenuItem addOrder = new JMenuItem(orderAction.getCreateAction());
-        JMenuItem addCategory = new JMenuItem(categoryAction.getCreateAction());
         JMenuItem close = new JMenuItem(closeAction);
 
-        mainMenu.add(addProduct);
-        mainMenu.add(addOrder);
-        mainMenu.add(addCategory);
         mainMenu.addSeparator();
         mainMenu.add(close);
         jMenuBar.add(mainMenu);
@@ -113,37 +114,6 @@ public class MainFrame extends JFrame {
         setJMenuBar(jMenuBar);
 
     }
-
-    private Action saveAction = new AbstractAction(Strings.NEW_PRODUCT) {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            if (DataSource.getInstance().getController("CATEGORY").rowCount() > 0) {
-
-                GenericDAO<Product> productController = new GenericDAO(Product.class);
-                GenericDAO<Category> categoryController = new GenericDAO(Category.class);
-
-                Product product = new Product();
-
-                AddProductPanel addProductPanel = new AddProductPanel(product, DataSource.getInstance().getController("CATEGORY").readAll());
-                FormDialog formDialog = new FormDialog(MainFrame.this, enabled, addProductPanel);
-
-                if (formDialog.isSaveRequired()) {
-
-                    addProductPanel.setAttributes();
-
-                    Logger.log(Strings.SAVE_DATA, "DEBUG");
-
-                    productTableModel.create(product);
-                }
-
-            } else {
-
-                MainFrame.showError(Strings.ERROR_NO_CATEGORY);
-
-            }
-        }
-    };
 
     private Action closeAction = new AbstractAction("Kilépés") {
         @Override
