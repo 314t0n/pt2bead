@@ -2,7 +2,6 @@ package gui.dialogs;
 
 import gui.MainFrame;
 import gui.panels.DialogPanel;
-import gui.tablemodels.GenericTableModel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import logic.Strings;
+import logic.exceptions.NegativNumberException;
 
 public class FormDialog extends JDialog implements ActionListener {
 
@@ -56,8 +57,10 @@ public class FormDialog extends JDialog implements ActionListener {
                 answer = true;
                 setVisible(false);
 
+            } catch (NegativNumberException ex) {
+                MainFrame.showError(ex.getMessage());
             } catch (NumberFormatException ex) {
-                MainFrame.showError("Hibás szám az ár mezőnél!");
+                MainFrame.showError(Strings.ERROR_NUMBER_FORMAT);
             }
 
         } else if (noButton == e.getSource()) {

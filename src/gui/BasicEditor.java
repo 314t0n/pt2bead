@@ -1,11 +1,9 @@
 package gui;
 
-import gui.actions.ICrudServiceAction;
 import gui.tablemodels.GenericTableModel;
+import gui.tablemodels.TableFactory;
 import gui.tablemodels.TableModelFactory;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,9 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableRowSorter;
-import logic.CrudService;
+import logic.ICrudService;
 import logic.IEntity;
-import logic.Strings;
 
 /**
  * JPanel alapvető szerkesztési feladatokhoz.
@@ -28,7 +25,7 @@ import logic.Strings;
  * @param <T> IEntity típus
  * @param <S> CrudService típus
  */
-public class BasicEditor<T extends IEntity, S extends CrudService<T>> extends JPanel {
+public class BasicEditor<T extends IEntity, S extends ICrudService<T>> extends JPanel {
     
     private final JPanel mainPanel;
     private GenericTableModel<T, S> tableModel;
@@ -52,13 +49,15 @@ public class BasicEditor<T extends IEntity, S extends CrudService<T>> extends JP
         this.mainPanel = new JPanel();
         this.entity = entity;
         this.tableModel = TableModelFactory.createTableModel(entity.getClass(), entity.getPropertyNames());
-        this.table = new JTable();
+       
         this.buttonPanel = new JPanel();
         
         setMainPanel();
         
-        setTable();
+        //setTable();
+        table = TableFactory.createTable(tableModel);
         
+        mainPanel.add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
     /**

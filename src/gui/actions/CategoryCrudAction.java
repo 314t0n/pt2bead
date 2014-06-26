@@ -5,25 +5,43 @@
  */
 package gui.actions;
 
+import gui.BasicEditor;
 import gui.dialogs.FormDialog;
 import gui.panels.AddCategoryPanel;
+import gui.tablemodels.GenericTableModel;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JFrame;
+import javax.swing.JButton;
+import logic.GenericDAO;
 import logic.Logger;
 import logic.Strings;
 import logic.entites.Category;
 
-public class CategoryCrudAction implements ICrudServiceAction {
+public class CategoryCrudAction extends BasicAction {
 
-    private final JFrame frame;
+    public CategoryCrudAction(BasicEditor editor) {
+        super(editor);
 
-    public CategoryCrudAction(JFrame frame) {
-        this.frame = frame;
+        addButtons();
     }
 
-    @Override
+    private void addButtons() {
+
+        JButton jButtonCreate = new JButton(Strings.NEW_CATEGORY);
+
+        jButtonCreate.setAction(getCreateAction());
+
+        editor.addButton(jButtonCreate);
+
+        JButton jButtonDelete = new JButton(Strings.DEL);
+
+        jButtonDelete.setAction(getDeleteAction());
+
+        editor.addButton(jButtonDelete);
+
+    }
+
     public Action getCreateAction() {
         return new AbstractAction(Strings.NEW_CATEGORY) {
             @Override
@@ -32,7 +50,7 @@ public class CategoryCrudAction implements ICrudServiceAction {
                 Category category = new Category();
 
                 AddCategoryPanel addCategoryPanel = new AddCategoryPanel(category);
-                FormDialog formDialog = new FormDialog(frame, enabled, addCategoryPanel);
+                FormDialog formDialog = new FormDialog(editor.getParentFrame(), enabled, addCategoryPanel);
 
                 if (formDialog.isSaveRequired()) {
 
@@ -40,32 +58,9 @@ public class CategoryCrudAction implements ICrudServiceAction {
 
                     addCategoryPanel.setAttributes();
 
+                    ((GenericTableModel<Category, GenericDAO<Category>>) editor.getTable().getModel()).create((Category) addCategoryPanel.getModel());
+
                 }
-            }
-        };
-    }
-
-    @Override
-    public Action getReadAction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Action getUpdateAction() {
-        return new AbstractAction(Strings.MOD) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        };
-    }
-
-    @Override
-    public Action getDeleteAction() {
-        return new AbstractAction(Strings.DEL) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
             }
         };
     }

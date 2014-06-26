@@ -1,6 +1,7 @@
 package logic;
 
 import java.io.Serializable;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -10,7 +11,7 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-public class GenericDAO<T extends IEntity> implements Serializable, CrudService<T> {
+public class GenericDAO<T extends IEntity> implements Serializable, ICrudService<T> {
 
     private final EntityManagerFactory emf;
     private final Class<T> type;
@@ -40,8 +41,7 @@ public class GenericDAO<T extends IEntity> implements Serializable, CrudService<
 
     @Override
     public void create(T t) {
-            
-        
+
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -64,7 +64,7 @@ public class GenericDAO<T extends IEntity> implements Serializable, CrudService<
     public T read(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(type, id);
+            return em.find(type, id.longValue());
         } finally {
             em.close();
         }
@@ -100,14 +100,17 @@ public class GenericDAO<T extends IEntity> implements Serializable, CrudService<
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+
             try {
                 t = em.getReference(type, t.getId());
                 t.getId();
+
+                em.remove(t);
+                em.getTransaction().commit();
+
             } catch (EntityNotFoundException enfe) {
                 System.out.println("The entity no longer exists.");
             }
-            em.remove(t);
-            em.getTransaction().commit();
         } finally {
             if (em != null) {
                 em.close();

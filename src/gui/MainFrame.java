@@ -1,16 +1,12 @@
 package gui;
 
+import gui.actions.BasicAction;
 import gui.actions.CategoryCrudAction;
-import gui.actions.ICrudServiceAction;
 import gui.actions.OrderCrudAction;
 import gui.actions.ProductCrudAction;
-import gui.dialogs.FormDialog;
-import gui.panels.AddProductPanel;
-import gui.tablemodels.GenericTableModel;
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -23,10 +19,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
-import javax.swing.table.TableRowSorter;
-import logic.DataSource;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import logic.GenericDAO;
-import logic.Logger;
 import logic.Strings;
 import logic.entites.Category;
 import logic.entites.Order;
@@ -38,6 +33,10 @@ public class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    public static void showInfo(String message) {
+        JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private final int SIZE_X = 700;
     private final int SIZE_Y = 500;
 
@@ -46,9 +45,13 @@ public class MainFrame extends JFrame {
     private final JPanel categoryPanel;
     private final JPanel orderPanel;
 
-    private final ICrudServiceAction productAction;
-    private final ICrudServiceAction orderAction;
-    private final ICrudServiceAction categoryAction;
+    private final BasicAction productAction;
+    private final BasicAction orderAction;
+    private final BasicAction categoryAction;
+
+    private BasicEditor<Product, GenericDAO<Product>> productEditor;
+    private BasicEditor<Order, GenericDAO<Order>> orderEditor;
+    private BasicEditor<Category, GenericDAO<Category>> categoryEditor;
 
     public MainFrame() throws HeadlessException {
 
@@ -72,15 +75,15 @@ public class MainFrame extends JFrame {
         Order order = new Order();
         Category category = new Category();
 
-        BasicEditor<Product, GenericDAO<Product>> productEditor = null;
-        BasicEditor<Order, GenericDAO<Order>> orderEditor = null;
-        BasicEditor<Category, GenericDAO<Category>> categoryEditor = null;
+        productEditor = null;
+        orderEditor = null;
+        categoryEditor = null;
 
         try {
 
             productEditor = new BasicEditor(product, this);
-            //orderEditor = new BasicEditor(order, orderAction, this);
-            //categoryEditor = new BasicEditor(category, categoryAction, this);
+            orderEditor = new BasicEditor(order, this);
+            categoryEditor = new BasicEditor(category, this);
 
         } catch (InstantiationException ex) {
             ex.printStackTrace();
@@ -89,17 +92,28 @@ public class MainFrame extends JFrame {
         }
 
         productAction = new ProductCrudAction(productEditor);
-        categoryAction = new CategoryCrudAction(this);
-        orderAction = new OrderCrudAction(this);
+        categoryAction = new CategoryCrudAction(categoryEditor);
+        orderAction = new OrderCrudAction(orderEditor);
 
-        jTabbedPane.addTab(Strings.PRODUCT, new JScrollPane(productEditor));
         jTabbedPane.addTab(Strings.ORDER, new JScrollPane(orderEditor));
-        jTabbedPane.addTab(Strings.CATEGORY, new JScrollPane(categoryEditor));        
+        jTabbedPane.addTab(Strings.PRODUCT, new JScrollPane(productEditor));
+        jTabbedPane.addTab(Strings.CATEGORY, new JScrollPane(categoryEditor));
 
         getContentPane().add(jTabbedPane, BorderLayout.CENTER);
-        
-    }
 
+    }
+/*
+    private ChangeListener changeListener = new ChangeListener() {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            productEditor.getTable().repaint();
+            orderEditor.getTable().repaint();
+            categoryEditor.getTable().repaint();
+        }
+
+    };
+*/
     private void setMenu() {
 
         JMenuBar jMenuBar = new JMenuBar();

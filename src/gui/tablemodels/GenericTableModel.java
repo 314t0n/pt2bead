@@ -2,14 +2,12 @@ package gui.tablemodels;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import logic.CrudService;
+import logic.ICrudService;
 import logic.IEntity;
 import org.eclipse.persistence.exceptions.DatabaseException;
 
-public class GenericTableModel<T extends IEntity, S extends CrudService<T>> extends AbstractTableModel {
+public class GenericTableModel<T extends IEntity, S extends ICrudService<T>> extends AbstractTableModel {
 
     private final S source;
     private final String[] columnNames;
@@ -21,7 +19,7 @@ public class GenericTableModel<T extends IEntity, S extends CrudService<T>> exte
         this.columnNames = columnNames;
         this.isEditAbleColumn = new boolean[columnNames.length];
         this.items = new ArrayList();
-        this.readAll();        
+        this.readAll();
     }
 
     public void setColumnEditAble(int columnNumber) {
@@ -103,7 +101,7 @@ public class GenericTableModel<T extends IEntity, S extends CrudService<T>> exte
     }
 
     public void delete(int rowIndex) {
-        try {                    
+        try {
             source.delete(items.get(rowIndex));
             readAll();
             fireTableDataChanged();
@@ -111,5 +109,26 @@ public class GenericTableModel<T extends IEntity, S extends CrudService<T>> exte
             System.err.println(ex.getMessage());
         }
     }
-    
+
+    public T read(int rowIndex) {
+        try {
+            return items.get(rowIndex);
+        } catch (DatabaseException ex) {
+            System.err.println(ex.getMessage());
+            return null;
+        }
+
+    }
+
+    public void update(T elem) {
+        try {
+            source.update(elem);
+            readAll();
+            fireTableDataChanged();
+        } catch (DatabaseException ex) {
+            System.err.println(ex.getMessage());
+        }
+
+    }
+
 }

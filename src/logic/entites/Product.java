@@ -130,9 +130,10 @@ public class Product implements Serializable, IEntity {
 
     @Override
     public String toString() {
-        return "logic.entites.Product[ id=" + id + " ]";
+        return manufacturer + ", " + type + ", " + category + ", " + price + " egység. ";
     }
 
+  
     @Override
     public String[] getPropertyNames() {
         return new String[]{"gyártó", "típus", "leírás", "kategória", "ár", "raktárkészlet", "aktív-e"};

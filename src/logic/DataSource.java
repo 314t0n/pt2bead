@@ -23,7 +23,7 @@ public class DataSource {
      * @param type termék, rendelés ...
      * @return 
      */
-    public CrudService getController(String type) {
+    public ICrudService getController(String type) {
 
         if (type.equalsIgnoreCase("PRODUCT")) {
 

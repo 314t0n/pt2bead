@@ -6,12 +6,19 @@
 package logic.entites;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
+import logic.DataSource;
 import logic.IEntity;
 
 /**
@@ -35,14 +42,69 @@ public class Order implements Serializable, IEntity {
         this.id = id;
     }
 
+    public Order() {
+        this.fullfilled = false;
+    }
+
     private String name;
     private String address;
     private String number;
     private String email;
 
-    @ManyToOne
-    private Product product;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isFullfilled() {
+        return fullfilled;
+    }
+
+    public void setFullfilled(boolean fullfilled) {
+        this.fullfilled = fullfilled;
+    }
+
+    @ElementCollection
+    @JoinTable(name = "PRODUCT_ORDER", joinColumns = @JoinColumn(name = "ID"))
+    @MapKeyColumn(name = "NUMBER_OF_PRODUCT")
+    @Column(name = "AMOUNT")
+    private Map<Product, Integer> products = new HashMap<Product, Integer>();
     private boolean fullfilled;
+
+    public Map<Product, Integer> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Map<Product, Integer> products) {
+        this.products = products;
+    }
 
     @Override
     public int hashCode() {
@@ -71,52 +133,67 @@ public class Order implements Serializable, IEntity {
 
     @Override
     public String[] getPropertyNames() {
-        return new String[]{"név", "cím", "telefonszám", "email cím", "termékek listája", "teljesített-e"};
+        return new String[]{"dátum","név", "cím", "telefonszám", "email cím", "összérték", "teljesíthető-e"};
     }
 
     //Rendelések: név, cím, telefonszám, email cím, termékek listája, teljesített-e.
+    /**
+     * (dátum, név, cím, telefonszám, email cím, összérték), és mindegyiknél
+     * jelezze, hogy a rendelés teljesíthető-e -
+     *
+     * @param columnIndex
+     * @return
+     */
     @Override
     public Object get(int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return this.name;
+                return "dátum kell majd";
             case 1:
-                return this.address;
+                return this.name;
             case 2:
-                return this.number;
+                return this.address;
             case 3:
-                return this.email;
+                return this.number;
             case 4:
-                return this.product;
+                return this.email;
             case 5:
-                return this.fullfilled;
+                return sumPrices();
+            case 6:
+                return isFulfillAble();
             default:
                 return null;
         }
     }
 
+    private int sumPrices() {
+        int sum = 0;
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+            sum += entry.getKey().getPrice();
+        }
+        return sum;
+    }
+
+    private boolean isFulfillAble() {
+
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+
+            int requestedAmount = entry.getValue();
+            int stockAmount = ((Product) DataSource.getInstance().getController("Product").read(((Product) entry.getKey()).getId().intValue())).getStock();
+
+            if (stockAmount < requestedAmount) {
+                return false;
+            }
+
+        }
+
+        return true;
+
+    }
+
     @Override
     public void set(int columnIndex, Object value) {
-        switch (columnIndex) {
-            case 0:
-                this.name = (String) value;
-                break;
-            case 1:
-                this.address = (String) value;
-                break;
-            case 2:
-                this.number = (String) value;
-                break;
-            case 3:
-                this.email = (String) value;
-                break;
-            case 4:
-                this.product = (Product) value;
-                break;
-            case 5:
-                this.fullfilled = (boolean) value;
-                break;
-        }
+        //nem szerkeszthető
     }
 
 }

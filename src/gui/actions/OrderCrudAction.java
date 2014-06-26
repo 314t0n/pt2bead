@@ -5,87 +5,95 @@
  */
 package gui.actions;
 
-import gui.MainFrame;
-import gui.dialogs.FormDialog;
-import gui.panels.AddProductPanel;
+import gui.BasicEditor;
+import gui.tablemodels.GenericTableModel;
 import java.awt.event.ActionEvent;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import logic.DataSource;
-import logic.Logger;
+import logic.GenericDAO;
 import logic.Strings;
+import logic.entites.Order;
 import logic.entites.Product;
 
 /**
  *
  * @author ag313w
  */
-public class OrderCrudAction implements ICrudServiceAction {
+public class OrderCrudAction extends BasicAction {
 
-    private final JFrame frame;
+    public OrderCrudAction(BasicEditor editor) {
+        super(editor);
+        addButtons();
+    }
 
-    public OrderCrudAction(JFrame frame) {
+    private void addButtons() {
 
-        this.frame = frame;
+        JButton jButtonFulfill = new JButton(Strings.FULFILL);
+
+        jButtonFulfill.setAction(getUpdateAction());
+
+        editor.addButton(jButtonFulfill);
+
+        JButton jButtonDelete = new JButton(Strings.DEL);
+
+        jButtonDelete.setAction(getDeleteAction());
+
+        editor.addButton(jButtonDelete);
 
     }
 
-    @Override
-    public Action getCreateAction() {
-        return new AbstractAction(Strings.NEW_ORDER) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                if (DataSource.getInstance().getController("CATEGORY").rowCount() > 0) {
-
-                    Product product = new Product();
-
-                    AddProductPanel addProductPanel = new AddProductPanel(product, DataSource.getInstance().getController("ORDER").readAll());
-                    FormDialog formDialog = new FormDialog(frame, enabled, addProductPanel);
-
-                    if (formDialog.isSaveRequired()) {
-
-                        addProductPanel.setAttributes();
-
-                        Logger.log("Adatok mentése", "DEBUG");
-
-                        //table.fireTableRowsInserted(0, table.getColumnCount() - 1);
-                    }
-
-                } else {
-
-                    MainFrame.showError(Strings.ERROR_NO_PRODUCT);
-
-                }
-
-            }
-        };
-    }
-
-    @Override
-    public Action getReadAction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
+    /**
+     * A teljesíthető megrendeléseket lehessen teljesíteni azok kiválasztásával.
+     * Teljesítéskor a program kérjen megerősítést, majd automatikusan módosítsa
+     * a raktárkészletet is. A teljesített megrendelések többé ne legyenek
+     * láthatóak.
+     *
+     * @return
+     */
     public Action getUpdateAction() {
         return new AbstractAction(Strings.MOD) {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                if (editor.getTable().getSelectedRowCount() > 0) {
+
+                    Integer row = editor.getTable().convertRowIndexToModel(editor.getTable().getSelectedRow());
+
+                    Order order = ((GenericTableModel<Order, GenericDAO<Order>>) editor.getTable().getModel()).read(row);
+
+                    JOptionPane optionPane = new JOptionPane(Strings.CONFIRM,
+                            JOptionPane.QUESTION_MESSAGE,
+                            JOptionPane.YES_NO_OPTION);
+
+                    int value = ((Integer) optionPane.getValue()).intValue();
+
+                    if (value == JOptionPane.YES_OPTION) {
+
+                        order.setFullfilled(true);
+
+                        ((GenericTableModel<Order, GenericDAO<Order>>) editor.getTable().getModel()).update(order);
+
+                        setStock(order);
+
+                    }
+
+                }
             }
         };
     }
 
-    @Override
-    public Action getDeleteAction() {
-        return new AbstractAction(Strings.DEL) {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+    private void setStock(Order order) {
 
-            }
-        };
+        for (Map.Entry<Product, Integer> entry : order.getProducts().entrySet()) {
+            int currentAmount = entry.getKey().getStock();
+            int requestedAmount = entry.getValue();
+            entry.getKey().setStock(currentAmount - requestedAmount);
+            DataSource.getInstance().getController("Product").update(entry.getKey());
+        }
     }
 
 }

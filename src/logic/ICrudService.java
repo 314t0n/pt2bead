@@ -2,7 +2,7 @@ package logic;
 
 import java.util.List;
 
-public interface CrudService<T extends IEntity> {
+public interface ICrudService<T extends IEntity> {
 
     public List<T> readAll();
 

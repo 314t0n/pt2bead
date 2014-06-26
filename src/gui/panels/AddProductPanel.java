@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 import logic.IEntity;
 import logic.entites.Category;
 import logic.entites.Product;
+import logic.exceptions.NegativNumberException;
 
 public class AddProductPanel extends DialogPanel {
 
@@ -62,6 +63,8 @@ public class AddProductPanel extends DialogPanel {
 
     @Override
     public void setAttributes() {
+        
+        checkNumber();
 
         product.setActive(active.isSelected());
         product.setType(type.getText());
@@ -70,6 +73,12 @@ public class AddProductPanel extends DialogPanel {
         product.setPrice(Integer.parseInt(price.getText()));
         product.setCategory(categories.get(categoryList.getSelectedIndex()));
 
+    }
+
+    private void checkNumber() {
+        if (Integer.parseInt(price.getText()) < 0) {
+            throw new NegativNumberException();
+        }
     }
 
     @Override
