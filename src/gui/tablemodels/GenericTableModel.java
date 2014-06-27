@@ -7,14 +7,25 @@ import logic.ICrudService;
 import logic.IEntity;
 import logic.Logger;
 import org.eclipse.persistence.exceptions.DatabaseException;
-
+/**
+ * Generikus táblamodel
+ * 
+ *  
+ * @author ag313w
+ * @param <T> Az adott entitás
+ * @param <S> és az ahhoz tartozó CRUD műveletek megvalósító adatbázis objetum
+ */
 public class GenericTableModel<T extends IEntity, S extends ICrudService<T>> extends AbstractTableModel {
 
     private final S source;
     private final String[] columnNames;
     private List<T> items;
     private final boolean[] isEditAbleColumn;
-
+    /**
+     * 
+     * @param source ICrudService-t megvalósító DAO
+     * @param columnNames propertyNames
+     */
     public GenericTableModel(S source, String[] columnNames) {
         this.source = source;
         this.columnNames = columnNames;
@@ -22,7 +33,10 @@ public class GenericTableModel<T extends IEntity, S extends ICrudService<T>> ext
         this.items = new ArrayList();
         this.readAll();
     }
-
+    /**
+     * Szerkeszthető oszlopok
+     * @param columnNumber 
+     */
     public void setColumnEditAble(int columnNumber) {
         try {
             isEditAbleColumn[columnNumber] = true;

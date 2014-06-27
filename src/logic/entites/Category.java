@@ -13,8 +13,8 @@ import javax.persistence.Id;
 import logic.IEntity;
 
 /**
- *
- * @author D
+ * 
+ * @author ag313w
  */
 @Entity
 public class Category implements Serializable, IEntity {

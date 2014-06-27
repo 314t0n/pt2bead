@@ -22,6 +22,7 @@ import logic.entites.Order;
 import logic.entites.Product;
 
 /**
+ * Rendelés Action-ök.
  *
  * @author ag313w
  */
@@ -29,9 +30,15 @@ public class OrderCrudAction extends BasicAction {
 
     private BasicEditorPanel productEditor;
 
+    /**
+     *
+     * @param editor rendelés felület elemei
+     * @param productEditor termék felület elemei
+     */
     public OrderCrudAction(BasicEditorPanel editor, BasicEditorPanel productEditor) {
         super(editor);
         this.productEditor = productEditor;
+        //kiszűri a teljesített rendeléseket
         RowFilter<Object, Object> startsWithAFilter = new RowFilter<Object, Object>() {
 
             @Override
@@ -41,19 +48,19 @@ public class OrderCrudAction extends BasicAction {
                 return !order.isFullfilled();
             }
         };
-        Logger.log("ezutn", "DEBUG");
         System.out.println(startsWithAFilter);
 
         try {
             editor.getTableSorter().setRowFilter(startsWithAFilter);
         } catch (Exception ex) {
-           Logger.log("null", "DEBUG");
+            
         }
-        Logger.log("ezutn", "DEBUG");        
         addButtons();
 
     }
-
+    /**
+     * Gombok felvétele
+     */
     private void addButtons() {
 
         JButton jButtonFulfill = new JButton(Strings.FULFILL);
@@ -78,7 +85,7 @@ public class OrderCrudAction extends BasicAction {
      *
      * @return
      */
-    public Action getUpdateAction() {
+    private Action getUpdateAction() {
         return new AbstractAction(Strings.FULFILL) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,7 +121,11 @@ public class OrderCrudAction extends BasicAction {
             }
         };
     }
-
+    /**
+     * A rendeléshez tartozó termékek raktár készletét csökkenti.
+     * 
+     * @param order aktuális rendelés
+     */
     private void setStock(Order order) {
 
         for (Map.Entry<Product, Integer> entry : order.getProducts().entrySet()) {

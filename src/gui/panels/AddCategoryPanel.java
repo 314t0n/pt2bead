@@ -2,17 +2,23 @@ package gui.panels;
 
 import java.awt.GridLayout;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import logic.IEntity;
 import logic.Strings;
 import logic.entites.Category;
-
+/**
+ * Új kategória panel
+ * 
+ * @author ag313w
+ */
 public class AddCategoryPanel extends DialogPanel {
 
     private JTextField name;
     private Category category;
-
+    /**
+     * 
+     * @param category 
+     */
     public AddCategoryPanel(Category category) {
 
         setName(Strings.NEW_CATEGORY);
@@ -24,7 +30,7 @@ public class AddCategoryPanel extends DialogPanel {
         this.category = category;
 
     }
-
+ 
     private void initPanel() {
 
         add(new JLabel("Felvesz"));

@@ -56,11 +56,12 @@ public class BasicEditorPanel<T extends IEntity, S extends ICrudService<T>> exte
 
         table = TableFactory.createTable(tableModel);
         tableSorter = new TableRowSorter(tableModel);
-
-        table.setModel(tableModel);
+ 
         table.setRowSorter(tableSorter);
         //table.setAutoCreateRowSorter(true);
 
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+             
         mainPanel.add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
@@ -98,19 +99,31 @@ public class BasicEditorPanel<T extends IEntity, S extends ICrudService<T>> exte
         }
 
     }
-
+    /**
+     * 
+     * @return a táblához tartozó rendező elem
+     */
     public TableRowSorter getTableSorter() {
         return tableSorter;
     }
-
+    /**
+     * Új gomb felvétele
+     * @param button 
+     */
     public void addButton(JButton button) {
         buttonPanel.add(button);
     }
-
+    /**
+     * 
+     * @return a tábla elem
+     */
     public JTable getTable() {
         return table;
     }
-
+    /**
+     * 
+     * @return szülőkeret
+     */
     public JFrame getParentFrame() {
         return parentFrame;
     }

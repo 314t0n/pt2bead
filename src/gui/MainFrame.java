@@ -20,20 +20,35 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import logic.db.GenericDAO;
 import logic.Strings;
 import logic.entites.Category;
 import logic.entites.Order;
 import logic.entites.Product;
 
+/**
+ * Főablak
+ *
+ * 3 tabon: Rendelés, Termék, Kategória szerkesztő felületek
+ *
+ * @author ag313w
+ */
 public class MainFrame extends JFrame {
 
+    /**
+     * Hiba üzenet feldobása
+     *
+     * @param message Megjelenítendő üzenet
+     */
     public static void showError(String message) {
         JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Info üzenet feldobása
+     *
+     * @param message Megjelenítendő üzenet
+     */
     public static void showInfo(String message) {
         JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
@@ -54,6 +69,11 @@ public class MainFrame extends JFrame {
     private BasicEditorPanel<Order, GenericDAO<Order>> orderEditor;
     private BasicEditorPanel<Category, GenericDAO<Category>> categoryEditor;
 
+    /**
+     * 
+     *
+     * @throws HeadlessException
+     */
     public MainFrame() throws HeadlessException {
 
         setTitle(Strings.APP_NAME);
@@ -104,6 +124,9 @@ public class MainFrame extends JFrame {
 
     }
 
+    /**
+     * Menü elemek
+     */
     private void setMenu() {
 
         JMenuBar jMenuBar = new JMenuBar();
@@ -118,7 +141,9 @@ public class MainFrame extends JFrame {
         setJMenuBar(jMenuBar);
 
     }
-
+    /**
+     * Kilépés menü
+     */
     private Action closeAction = new AbstractAction(Strings.QUIT) {
         @Override
         public void actionPerformed(ActionEvent e) {

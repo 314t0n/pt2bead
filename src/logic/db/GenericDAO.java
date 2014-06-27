@@ -12,7 +12,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import logic.ICrudService;
 import logic.IEntity;
-
+/**
+ * Generikus CRUD műveleteket megvalósító DAO objektum
+ * @author ag313w
+ * @param <T> entitás
+ */
 public class GenericDAO<T extends IEntity> implements Serializable, ICrudService<T> {
 
     private final EntityManagerFactory emf;

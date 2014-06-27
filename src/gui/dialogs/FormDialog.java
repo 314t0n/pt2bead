@@ -11,7 +11,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import logic.Strings;
 import logic.exceptions.NegativNumberException;
-
+/**
+ * Kitölthető űrlap dialog
+ * 
+ * Mentés, Mégse gombokkal
+ * 
+ * Az űrlap panel injektálható
+ * 
+ * @author ag313w
+ */
 public class FormDialog extends JDialog implements ActionListener {
 
     private JPanel submitPanel;
@@ -20,7 +28,12 @@ public class FormDialog extends JDialog implements ActionListener {
     private JButton yesButton;
     private JButton noButton;
     private boolean answer;
-
+    /**
+     * 
+     * @param frame szülő keret
+     * @param modal 
+     * @param addPanel beszúrt panel elem
+     */
     public FormDialog(JFrame frame, boolean modal, DialogPanel addPanel) {
         super(frame, modal);
 
@@ -37,7 +50,9 @@ public class FormDialog extends JDialog implements ActionListener {
         setLocationRelativeTo(frame);
         setVisible(true);
     }
-
+    /**
+     * Gombok beállítása
+     */
     private void setButtons() {
         yesButton = new JButton("Mentes");
         yesButton.addActionListener(this);
@@ -46,7 +61,11 @@ public class FormDialog extends JDialog implements ActionListener {
         noButton.addActionListener(this);
         submitPanel.add(noButton);
     }
-
+    /**
+     * Mentés/Mégse gombok
+     * esetén beállítja az állapot (kell-e menteni).
+     * @param e 
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (yesButton == e.getSource()) {
@@ -67,7 +86,10 @@ public class FormDialog extends JDialog implements ActionListener {
             setVisible(false);
         }
     }
-
+    /**
+     * Kell-e menteni
+     * @return 
+     */
     public boolean isSaveRequired() {
         return answer;
     }

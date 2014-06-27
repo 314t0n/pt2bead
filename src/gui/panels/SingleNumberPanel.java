@@ -6,7 +6,10 @@ import logic.IEntity;
 import logic.Strings;
 import logic.exceptions.NegativNumberException;
 import logic.exceptions.ZeroNumberException;
-
+/**
+ * Egyszerű, szám érték panel
+ * @author ag313w
+ */
 public class SingleNumberPanel extends DialogPanel {
 
     private JTextField number;
@@ -28,7 +31,7 @@ public class SingleNumberPanel extends DialogPanel {
         add(number);
 
     }
-
+  
     private void checkNumber() {
         if (Integer.parseInt(number.getText()) < 0) {
             throw new NegativNumberException();

@@ -1,7 +1,11 @@
 package logic;
 
 import java.util.List;
-
+/**
+ * CRUD műveletek
+ * @author ag313w
+ * @param <T> 
+ */
 public interface ICrudService<T extends IEntity> {
 
     public List<T> readAll();

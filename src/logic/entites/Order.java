@@ -24,11 +24,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import logic.db.DataSource;
 import logic.IEntity;
-import logic.Logger;
 
 /**
- * Order is reserved keyword
- *
+ * 
+ * @author ag313w
  */
 @Entity
 @Table(name = "Order_")

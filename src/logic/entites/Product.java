@@ -14,8 +14,8 @@ import javax.persistence.OneToOne;
 import logic.IEntity;
 
 /**
- *
- * @author D
+ * 
+ * @author ag313w
  */
 @Entity
 public class Product implements Serializable, IEntity {

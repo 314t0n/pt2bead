@@ -20,11 +20,19 @@ import logic.Logger;
 import logic.Strings;
 import logic.entites.Category;
 import logic.entites.Product;
-
+/**
+ * Kategória szerkesztő felülethez tartozó Action-ök.
+ * 
+ * @author ag313w
+ */
 public class CategoryCrudAction extends BasicAction {
 
     private BasicEditorPanel productEditor;
-
+    /**
+     * 
+     * @param editor kategória felület elemei
+     * @param productEditor termék felület elemei
+     */
     public CategoryCrudAction(BasicEditorPanel editor, BasicEditorPanel productEditor) {
         super(editor);
         this.productEditor = productEditor;
@@ -35,17 +43,18 @@ public class CategoryCrudAction extends BasicAction {
 
         setEditAble(0);
     }
-
+   
     private final TableModelListener tableModifiedListener = new TableModelListener() {
 
         @Override
-        public void tableChanged(TableModelEvent e) {
-            Logger.log("Mod", "DEBUG");
+        public void tableChanged(TableModelEvent e) {     
             ((GenericTableModel<Product, GenericDAO<Product>>) productEditor.getTable().getModel()).fireTableDataChanged();           
         }
 
     };
-
+    /**
+     * Gombok felvétele/beállítása
+     */
     private void addButtons() {
 
         JButton jButtonCreate = new JButton(Strings.NEW_CATEGORY);
@@ -61,8 +70,11 @@ public class CategoryCrudAction extends BasicAction {
         editor.addButton(jButtonDelete);
 
     }
-
-    public Action getCreateAction() {
+    /**
+     * 
+     * @return új kategória létrehozása
+     */
+    private Action getCreateAction() {
         return new AbstractAction(Strings.NEW_CATEGORY) {
             @Override
             public void actionPerformed(ActionEvent e) {

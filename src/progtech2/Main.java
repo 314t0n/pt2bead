@@ -11,7 +11,7 @@ import logic.Logger;
 public class Main {
 
     public static void main(String[] args) {
-
+        //ha nem volt kategória, akkor biztos nincs termék, rendelés...
         try {
             if (DataSource.getInstance().getController("Category").rowCount() < 1) {
                 DBSeed.doSeed();

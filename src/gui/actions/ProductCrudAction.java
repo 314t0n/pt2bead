@@ -10,19 +10,16 @@ import gui.tablemodels.GenericTableModel;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.DefaultRowSorter;
 import javax.swing.JButton;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.TableRowSorter;
 import logic.db.DataSource;
 import logic.db.GenericDAO;
 import logic.Logger;
@@ -31,9 +28,7 @@ import logic.entites.Order;
 import logic.entites.Product;
 
 /**
- * A read és update nincs megvalósítva, mivel a táblázat minden adatot
- * megjelenít és a módosítás is beállítható
- *
+ * Termék Action-ök.
  * @author ag313w
  */
 public class ProductCrudAction extends BasicAction {
@@ -42,7 +37,12 @@ public class ProductCrudAction extends BasicAction {
     private JButton jButtonCart;
     private JButton jButtonOrder;
     private BasicEditorPanel orderEditor;
-
+    
+    /**
+     * 
+     * @param editor termék elemek
+     * @param orderEditor rendelés elemek
+     */
     public ProductCrudAction(BasicEditorPanel editor, BasicEditorPanel orderEditor) {
         super(editor);
 
@@ -51,14 +51,14 @@ public class ProductCrudAction extends BasicAction {
         addButtons();
 
         editor.getTable().getModel().addTableModelListener(tableModifiedListener);
-        
+
         List<RowSorter.SortKey> sortKeys
                 = new ArrayList();
         sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
         sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
 
         editor.getTableSorter().setSortKeys(sortKeys);
-  
+
         setEditAble(0);
         setEditAble(1);
         setEditAble(2);
@@ -66,7 +66,9 @@ public class ProductCrudAction extends BasicAction {
         setEditAble(5);
         setEditAble(6);
     }
-
+    /**
+     * Módosítás esetén értesíti a rendelések táblázatot
+     */
     private final TableModelListener tableModifiedListener = new TableModelListener() {
 
         @Override
@@ -75,7 +77,9 @@ public class ProductCrudAction extends BasicAction {
         }
 
     };
-
+    /**
+     * Gombok felvétele
+     */
     private void addButtons() {
 
         JButton jButtonCreate = new JButton(Strings.NEW_PRODUCT);
@@ -111,14 +115,21 @@ public class ProductCrudAction extends BasicAction {
         setCartEnabled(false);
 
     }
-
+    /**
+     * Kosár 
+     * @param b engedélyez/tilt
+     */
     private void setCartEnabled(boolean b) {
         jButtonCart.setEnabled(b);
         jButtonOrder.setEnabled(b);
 
     }
-
-    public Action cartAction() {
+    /**
+     * Kijelölt termék elhelyezése a kosárba, ha az aktív
+     * 
+     * @return 
+     */
+    private Action cartAction() {
         return new AbstractAction(Strings.TO_CART) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -160,8 +171,13 @@ public class ProductCrudAction extends BasicAction {
             }
         };
     }
-
-    public Action orderAction() {
+    /**
+     * Rendelés leadása
+     * Kosár ürítése
+     * 
+     * @return 
+     */
+    private Action orderAction() {
         return new AbstractAction(Strings.MY_CART) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -208,12 +224,17 @@ public class ProductCrudAction extends BasicAction {
             }
         };
     }
-
+    /**
+     * Kosár gomb számláló
+     */
     private void setCartNumber() {
         jButtonOrder.setText(Strings.MY_CART + " (" + myCart.size() + ")");
     }
-
-    public Action newOrderAction() {
+    /**
+     * Új rendelés init
+     * @return 
+     */
+    private Action newOrderAction() {
         return new AbstractAction(Strings.NEW_ORDER) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -229,8 +250,11 @@ public class ProductCrudAction extends BasicAction {
             }
         };
     }
-
-    public Action getCreateAction() {
+    /**
+     * Új termék felvétele
+     * @return 
+     */
+    private Action getCreateAction() {
         return new AbstractAction(Strings.NEW_PRODUCT) {
             @Override
             public void actionPerformed(ActionEvent e) {

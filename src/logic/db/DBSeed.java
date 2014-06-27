@@ -5,7 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import logic.Logger;
-
+/**
+ * Adatbázis feltöltése alap adatokkal
+ * @author ag313w
+ */
 public class DBSeed {
 
     private static final String DB_URL = "jdbc:derby://localhost:1527/progtech2PU";

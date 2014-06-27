@@ -10,7 +10,10 @@ import logic.IEntity;
 import logic.entites.Category;
 import logic.entites.Product;
 import logic.exceptions.NegativNumberException;
-
+/**
+ * 
+ * @author ag313w
+ */
 public class AddProductPanel extends DialogPanel {
 
     private JTextField manufacturer;

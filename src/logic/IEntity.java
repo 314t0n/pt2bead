@@ -1,5 +1,8 @@
 package logic;
-
+/**
+ * Entitástól elvárt alapvetó műveletek
+ * @author ag313w
+ */
 public interface IEntity {
 
     public Long getId();

@@ -4,9 +4,16 @@ import gui.tablemodels.GenericTableModel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableRowSorter;
-
+/**
+ * 
+ * @author ag313w
+ */
 public class TableFactory {
-
+    /**
+     * 
+     * @param tableModel
+     * @return Adott táblamodelhez JTable és Sorter
+     */
     public static JTable createTable(GenericTableModel tableModel) {
         
         try {

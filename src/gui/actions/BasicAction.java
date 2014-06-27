@@ -13,21 +13,32 @@ import logic.Strings;
 import logic.entites.Product;
 
 /**
- *
+ * Alapvető szerkesztési felülethez tartozó Action-ök.
+ * 
  * @author ag313w
  */
 abstract public class BasicAction {
 
     protected BasicEditorPanel editor;
-
+    /**
+     * 
+     * @param editor tartalmazza a felület elemeit (táblázat, gombok)
+     */
     public BasicAction(BasicEditorPanel editor) {
         this.editor = editor;
     }
-
+    /**
+     * Szerkeszthető oszlopok beállítása
+     * 
+     * @param col melyik oszlop
+     */
     protected void setEditAble(int col) {
         ((GenericTableModel<Product, GenericDAO<Product>>) editor.getTable().getModel()).setColumnEditAble(col);
     }
-
+    /**
+     * 
+     * @return kijelölt elem(ek) törlése a táblázatból
+     */
     public Action getDeleteAction() {
         return new AbstractAction(Strings.DEL) {
             @Override

@@ -10,15 +10,16 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import logic.IEntity;
 import logic.Logger;
 import logic.Strings;
 import logic.entites.Order;
 import logic.entites.Product;
-import logic.exceptions.EmptyCartException;
-
+/**
+ * 
+ * @author ag313w
+ */
 public class AddOrderPanel extends DialogPanel {
 
     private Order order;
