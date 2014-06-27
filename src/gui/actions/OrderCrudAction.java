@@ -5,7 +5,8 @@
  */
 package gui.actions;
 
-import gui.BasicEditor;
+import gui.panels.BasicEditorPanel;
+import gui.MainFrame;
 import gui.tablemodels.GenericTableModel;
 import java.awt.event.ActionEvent;
 import java.util.Map;
@@ -13,8 +14,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import logic.DataSource;
-import logic.GenericDAO;
+import javax.swing.RowFilter;
+import logic.db.GenericDAO;
+import logic.Logger;
 import logic.Strings;
 import logic.entites.Order;
 import logic.entites.Product;
@@ -25,9 +27,31 @@ import logic.entites.Product;
  */
 public class OrderCrudAction extends BasicAction {
 
-    public OrderCrudAction(BasicEditor editor) {
+    private BasicEditorPanel productEditor;
+
+    public OrderCrudAction(BasicEditorPanel editor, BasicEditorPanel productEditor) {
         super(editor);
+        this.productEditor = productEditor;
+        RowFilter<Object, Object> startsWithAFilter = new RowFilter<Object, Object>() {
+
+            @Override
+            public boolean include(Entry entry) {
+                Order order = ((GenericTableModel<Order, GenericDAO<Order>>) entry.getModel()).read((int) entry.getIdentifier());
+                //nem teljesített => meg kell jeleníteni
+                return !order.isFullfilled();
+            }
+        };
+        Logger.log("ezutn", "DEBUG");
+        System.out.println(startsWithAFilter);
+
+        try {
+            editor.getTableSorter().setRowFilter(startsWithAFilter);
+        } catch (Exception ex) {
+           Logger.log("null", "DEBUG");
+        }
+        Logger.log("ezutn", "DEBUG");        
         addButtons();
+
     }
 
     private void addButtons() {
@@ -55,7 +79,7 @@ public class OrderCrudAction extends BasicAction {
      * @return
      */
     public Action getUpdateAction() {
-        return new AbstractAction(Strings.MOD) {
+        return new AbstractAction(Strings.FULFILL) {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -65,20 +89,25 @@ public class OrderCrudAction extends BasicAction {
 
                     Order order = ((GenericTableModel<Order, GenericDAO<Order>>) editor.getTable().getModel()).read(row);
 
-                    JOptionPane optionPane = new JOptionPane(Strings.CONFIRM,
-                            JOptionPane.QUESTION_MESSAGE,
-                            JOptionPane.YES_NO_OPTION);
-
-                    int value = ((Integer) optionPane.getValue()).intValue();
+                    int value = JOptionPane.showConfirmDialog(editor.getParentFrame(), Strings.CONFIRM_FULFILL);
 
                     if (value == JOptionPane.YES_OPTION) {
 
-                        order.setFullfilled(true);
+                        if (order.isFulfillAble()) {
 
-                        ((GenericTableModel<Order, GenericDAO<Order>>) editor.getTable().getModel()).update(order);
+                            Logger.log("Teljesít", "DEBUG");
 
-                        setStock(order);
+                            order.setFullfilled(true);
 
+                            ((GenericTableModel<Order, GenericDAO<Order>>) editor.getTable().getModel()).update(order);
+
+                            setStock(order);
+
+                        } else {
+
+                            MainFrame.showError(Strings.ERROR_NOT_FULFILLABLE);
+
+                        }
                     }
 
                 }
@@ -91,8 +120,14 @@ public class OrderCrudAction extends BasicAction {
         for (Map.Entry<Product, Integer> entry : order.getProducts().entrySet()) {
             int currentAmount = entry.getKey().getStock();
             int requestedAmount = entry.getValue();
-            entry.getKey().setStock(currentAmount - requestedAmount);
-            DataSource.getInstance().getController("Product").update(entry.getKey());
+            Product product = entry.getKey();
+            product.setStock(currentAmount - requestedAmount);
+
+            System.out.println(currentAmount);
+            System.out.println(requestedAmount);
+            System.out.println(currentAmount - requestedAmount);
+
+            ((GenericTableModel<Product, GenericDAO<Product>>) productEditor.getTable().getModel()).update(product);
         }
     }
 

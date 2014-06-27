@@ -1,4 +1,4 @@
-package logic;
+package logic.db;
 
 import java.io.Serializable;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -10,6 +10,8 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import logic.ICrudService;
+import logic.IEntity;
 
 public class GenericDAO<T extends IEntity> implements Serializable, ICrudService<T> {
 

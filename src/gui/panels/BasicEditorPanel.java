@@ -1,8 +1,8 @@
-package gui;
+package gui.panels;
 
 import gui.tablemodels.GenericTableModel;
-import gui.tablemodels.TableFactory;
-import gui.tablemodels.TableModelFactory;
+import gui.tablemodels.factory.TableFactory;
+import gui.tablemodels.factory.TableModelFactory;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
@@ -25,8 +25,8 @@ import logic.IEntity;
  * @param <T> IEntity típus
  * @param <S> CrudService típus
  */
-public class BasicEditor<T extends IEntity, S extends ICrudService<T>> extends JPanel {
-    
+public class BasicEditorPanel<T extends IEntity, S extends ICrudService<T>> extends JPanel {
+
     private final JPanel mainPanel;
     private GenericTableModel<T, S> tableModel;
     private TableRowSorter<GenericTableModel> tableSorter;
@@ -42,21 +42,25 @@ public class BasicEditor<T extends IEntity, S extends ICrudService<T>> extends J
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    public BasicEditor(IEntity entity, JFrame parentFrame) throws InstantiationException, IllegalAccessException {
+    public BasicEditorPanel(IEntity entity, JFrame parentFrame) throws InstantiationException, IllegalAccessException {
         super();
-        
+
         this.parentFrame = parentFrame;
         this.mainPanel = new JPanel();
         this.entity = entity;
         this.tableModel = TableModelFactory.createTableModel(entity.getClass(), entity.getPropertyNames());
-       
+
         this.buttonPanel = new JPanel();
-        
+
         setMainPanel();
-        
-        //setTable();
+
         table = TableFactory.createTable(tableModel);
-        
+        tableSorter = new TableRowSorter(tableModel);
+
+        table.setModel(tableModel);
+        table.setRowSorter(tableSorter);
+        //table.setAutoCreateRowSorter(true);
+
         mainPanel.add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
@@ -65,15 +69,15 @@ public class BasicEditor<T extends IEntity, S extends ICrudService<T>> extends J
      *
      */
     private void setMainPanel() {
-        
+
         BorderLayout layout = new BorderLayout();
-        
+
         mainPanel.setLayout(layout);
-        
+
         buttonPanel.setLayout(new FlowLayout());
-        
+
         mainPanel.add(buttonPanel, BorderLayout.NORTH);
-        
+
         this.add(mainPanel);
     }
 
@@ -81,32 +85,34 @@ public class BasicEditor<T extends IEntity, S extends ICrudService<T>> extends J
      * Táblázat felvétele és a főpanelhez adása.
      */
     private void setTable() {
-        
+
         try {
-            
-            tableSorter = new TableRowSorter(tableModel);
-            
+
             table.setModel(tableModel);
             table.setRowSorter(tableSorter);
             table.setAutoCreateRowSorter(true);
             mainPanel.add(new JScrollPane(table), BorderLayout.CENTER);
-            
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
+
     }
-    
+
+    public TableRowSorter getTableSorter() {
+        return tableSorter;
+    }
+
     public void addButton(JButton button) {
         buttonPanel.add(button);
     }
-    
+
     public JTable getTable() {
         return table;
     }
-    
+
     public JFrame getParentFrame() {
         return parentFrame;
     }
-    
+
 }

@@ -2,15 +2,20 @@ package logic;
 
 import javax.swing.Icon;
 
+/**
+ * string resource
+ * @author ag313w
+ */
 public class Strings {
 
-    public static final String APP_NAME = "pt2 bead";
+    public static final String APP_NAME = "Progtech2 Áruház";
     public static final String ERROR_NO_CATEGORY = "Nem lehet terméket felvenni : nincs egy kategória sem.";
     public static final String SAVE_DATA = "Adatok mentése";
     public static final String NEW_PRODUCT = "Új termék";
     public static final String NEW_ORDER = "Új rendelés";
     public static final String NEW_CATEGORY = "Új kategória";
 
+    public static final String QUIT = "Kilépés";
     public static final String NEW = "Új";
     public static final String DEL = "Törlés";
     public static final String MOD = "Módosítás";
@@ -31,6 +36,8 @@ public class Strings {
     public static final String REMOVE_PRODUCT = "Eltávolítás";
     public static final String ERROR_STOCK = "A megadott mennyiség nem elérhető!";
     public static final String ERROR_NOT_ACTIVE = "Nem rendelhető!";
-    public static final String CONFIRM = "Biztosan?";
+    public static final String CONFIRM_FULFILL = "Teljesítés megerősítése.";
+    public static final String ERROR_NOT_FULFILLABLE = "Nem teljesíthető megrendelés!";
+    public static final String ERROR_REFERENCE = "Nem törölhető!";
 
 }

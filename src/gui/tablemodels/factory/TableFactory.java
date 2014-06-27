@@ -1,5 +1,6 @@
-package gui.tablemodels;
+package gui.tablemodels.factory;
 
+import gui.tablemodels.GenericTableModel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableRowSorter;

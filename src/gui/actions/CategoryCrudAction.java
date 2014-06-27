@@ -5,7 +5,7 @@
  */
 package gui.actions;
 
-import gui.BasicEditor;
+import gui.panels.BasicEditorPanel;
 import gui.dialogs.FormDialog;
 import gui.panels.AddCategoryPanel;
 import gui.tablemodels.GenericTableModel;
@@ -13,18 +13,38 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
-import logic.GenericDAO;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import logic.db.GenericDAO;
 import logic.Logger;
 import logic.Strings;
 import logic.entites.Category;
+import logic.entites.Product;
 
 public class CategoryCrudAction extends BasicAction {
 
-    public CategoryCrudAction(BasicEditor editor) {
-        super(editor);
+    private BasicEditorPanel productEditor;
 
+    public CategoryCrudAction(BasicEditorPanel editor, BasicEditorPanel productEditor) {
+        super(editor);
+        this.productEditor = productEditor;
+        
+        editor.getTable().getModel().addTableModelListener(tableModifiedListener);
+        
         addButtons();
+
+        setEditAble(0);
     }
+
+    private final TableModelListener tableModifiedListener = new TableModelListener() {
+
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            Logger.log("Mod", "DEBUG");
+            ((GenericTableModel<Product, GenericDAO<Product>>) productEditor.getTable().getModel()).fireTableDataChanged();           
+        }
+
+    };
 
     private void addButtons() {
 

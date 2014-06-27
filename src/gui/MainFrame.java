@@ -1,5 +1,6 @@
 package gui;
 
+import gui.panels.BasicEditorPanel;
 import gui.actions.BasicAction;
 import gui.actions.CategoryCrudAction;
 import gui.actions.OrderCrudAction;
@@ -21,7 +22,7 @@ import javax.swing.JToolBar;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import logic.GenericDAO;
+import logic.db.GenericDAO;
 import logic.Strings;
 import logic.entites.Category;
 import logic.entites.Order;
@@ -37,7 +38,7 @@ public class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private final int SIZE_X = 700;
+    private final int SIZE_X = 900;
     private final int SIZE_Y = 500;
 
     private final JTabbedPane jTabbedPane;
@@ -49,9 +50,9 @@ public class MainFrame extends JFrame {
     private final BasicAction orderAction;
     private final BasicAction categoryAction;
 
-    private BasicEditor<Product, GenericDAO<Product>> productEditor;
-    private BasicEditor<Order, GenericDAO<Order>> orderEditor;
-    private BasicEditor<Category, GenericDAO<Category>> categoryEditor;
+    private BasicEditorPanel<Product, GenericDAO<Product>> productEditor;
+    private BasicEditorPanel<Order, GenericDAO<Order>> orderEditor;
+    private BasicEditorPanel<Category, GenericDAO<Category>> categoryEditor;
 
     public MainFrame() throws HeadlessException {
 
@@ -81,9 +82,9 @@ public class MainFrame extends JFrame {
 
         try {
 
-            productEditor = new BasicEditor(product, this);
-            orderEditor = new BasicEditor(order, this);
-            categoryEditor = new BasicEditor(category, this);
+            productEditor = new BasicEditorPanel(product, this);
+            orderEditor = new BasicEditorPanel(order, this);
+            categoryEditor = new BasicEditorPanel(category, this);
 
         } catch (InstantiationException ex) {
             ex.printStackTrace();
@@ -91,9 +92,9 @@ public class MainFrame extends JFrame {
             ex.printStackTrace();
         }
 
-        productAction = new ProductCrudAction(productEditor);
-        categoryAction = new CategoryCrudAction(categoryEditor);
-        orderAction = new OrderCrudAction(orderEditor);
+        productAction = new ProductCrudAction(productEditor, orderEditor);
+        categoryAction = new CategoryCrudAction(categoryEditor, productEditor);
+        orderAction = new OrderCrudAction(orderEditor, productEditor);
 
         jTabbedPane.addTab(Strings.ORDER, new JScrollPane(orderEditor));
         jTabbedPane.addTab(Strings.PRODUCT, new JScrollPane(productEditor));
@@ -102,18 +103,7 @@ public class MainFrame extends JFrame {
         getContentPane().add(jTabbedPane, BorderLayout.CENTER);
 
     }
-/*
-    private ChangeListener changeListener = new ChangeListener() {
 
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            productEditor.getTable().repaint();
-            orderEditor.getTable().repaint();
-            categoryEditor.getTable().repaint();
-        }
-
-    };
-*/
     private void setMenu() {
 
         JMenuBar jMenuBar = new JMenuBar();
@@ -129,7 +119,7 @@ public class MainFrame extends JFrame {
 
     }
 
-    private Action closeAction = new AbstractAction("Kilépés") {
+    private Action closeAction = new AbstractAction(Strings.QUIT) {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();

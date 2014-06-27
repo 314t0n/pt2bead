@@ -1,14 +1,13 @@
 package gui.actions;
 
-import gui.BasicEditor;
+import gui.panels.BasicEditorPanel;
 import gui.MainFrame;
 import gui.tablemodels.GenericTableModel;
 import java.awt.event.ActionEvent;
-import java.sql.SQLIntegrityConstraintViolationException;
 import javax.persistence.RollbackException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import logic.GenericDAO;
+import logic.db.GenericDAO;
 import logic.Logger;
 import logic.Strings;
 import logic.entites.Product;
@@ -19,10 +18,14 @@ import logic.entites.Product;
  */
 abstract public class BasicAction {
 
-    protected BasicEditor editor;
+    protected BasicEditorPanel editor;
 
-    public BasicAction(BasicEditor editor) {
+    public BasicAction(BasicEditorPanel editor) {
         this.editor = editor;
+    }
+
+    protected void setEditAble(int col) {
+        ((GenericTableModel<Product, GenericDAO<Product>>) editor.getTable().getModel()).setColumnEditAble(col);
     }
 
     public Action getDeleteAction() {
@@ -49,8 +52,7 @@ abstract public class BasicAction {
                 } catch (ArrayIndexOutOfBoundsException ex) {
                     //nem volt kijelölve semmi
                 } catch (RollbackException ex) {
-
-                    MainFrame.showError("Nem törölhető! (Valahol hivatkoznak rá van.)");
+                    MainFrame.showError(Strings.ERROR_REFERENCE);
                 }
             }
         };

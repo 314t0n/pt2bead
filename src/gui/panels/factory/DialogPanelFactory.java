@@ -1,4 +1,6 @@
-package gui.panels;
+package gui.panels.factory;
+
+import gui.panels.DialogPanel;
 
 
 public class DialogPanelFactory {

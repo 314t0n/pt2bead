@@ -1,7 +1,8 @@
-package gui.tablemodels;
+package gui.tablemodels.factory;
 
-import logic.DataSource;
-import logic.GenericDAO;
+import gui.tablemodels.GenericTableModel;
+import logic.db.DataSource;
+import logic.db.GenericDAO;
 import logic.IEntity;
 
 /**

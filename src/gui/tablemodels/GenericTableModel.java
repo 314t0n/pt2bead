@@ -5,6 +5,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import logic.ICrudService;
 import logic.IEntity;
+import logic.Logger;
 import org.eclipse.persistence.exceptions.DatabaseException;
 
 public class GenericTableModel<T extends IEntity, S extends ICrudService<T>> extends AbstractTableModel {
@@ -25,8 +26,8 @@ public class GenericTableModel<T extends IEntity, S extends ICrudService<T>> ext
     public void setColumnEditAble(int columnNumber) {
         try {
             isEditAbleColumn[columnNumber] = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (ArrayIndexOutOfBoundsException ex) {
+           Logger.log("Nem létező oszlop. (isEditAbleColumn)", "ERROR");
         }
     }
 
@@ -122,13 +123,15 @@ public class GenericTableModel<T extends IEntity, S extends ICrudService<T>> ext
 
     public void update(T elem) {
         try {
+            Logger.log(items.get(items.indexOf(elem)).toString(), "DEBUG");
             source.update(elem);
             readAll();
             fireTableDataChanged();
+            Logger.log(items.get(items.indexOf(elem)).toString(), "DEBUG");
         } catch (DatabaseException ex) {
             System.err.println(ex.getMessage());
         }
-
+        Logger.log("Update", "DEBUG");
     }
 
 }

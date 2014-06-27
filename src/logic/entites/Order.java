@@ -6,6 +6,8 @@
 package logic.entites;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -18,8 +20,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
-import logic.DataSource;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import logic.db.DataSource;
 import logic.IEntity;
+import logic.Logger;
 
 /**
  * Order is reserved keyword
@@ -50,6 +55,18 @@ public class Order implements Serializable, IEntity {
     private String address;
     private String number;
     private String email;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "DATE_FIELD")
+    private Date date;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public String getName() {
         return name;
@@ -133,7 +150,7 @@ public class Order implements Serializable, IEntity {
 
     @Override
     public String[] getPropertyNames() {
-        return new String[]{"dátum","név", "cím", "telefonszám", "email cím", "összérték", "teljesíthető-e"};
+        return new String[]{"dátum", "név", "cím", "telefonszám", "email cím", "összérték", "teljesíthető-e"};
     }
 
     //Rendelések: név, cím, telefonszám, email cím, termékek listája, teljesített-e.
@@ -148,7 +165,12 @@ public class Order implements Serializable, IEntity {
     public Object get(int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return "dátum kell majd";
+                if (date == null) {
+                    return "";
+                }
+                SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy.MM.dd");
+                String dateString = dateFormatter.format(date);
+                return dateString;
             case 1:
                 return this.name;
             case 2:
@@ -167,14 +189,18 @@ public class Order implements Serializable, IEntity {
     }
 
     private int sumPrices() {
-        int sum = 0;
+        int sum = 0;       
         for (Map.Entry<Product, Integer> entry : products.entrySet()) {
-            sum += entry.getKey().getPrice();
+            
+            for (int i = 0; i < entry.getValue(); i++) {
+                sum += entry.getKey().getPrice();
+            }
+     
         }
         return sum;
     }
 
-    private boolean isFulfillAble() {
+    public boolean isFulfillAble() {
 
         for (Map.Entry<Product, Integer> entry : products.entrySet()) {
 

@@ -1,6 +1,6 @@
 package gui.actions;
 
-import gui.BasicEditor;
+import gui.panels.BasicEditorPanel;
 import gui.MainFrame;
 import gui.dialogs.FormDialog;
 import gui.panels.AddOrderPanel;
@@ -8,13 +8,23 @@ import gui.panels.AddProductPanel;
 import gui.panels.SingleNumberPanel;
 import gui.tablemodels.GenericTableModel;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.DefaultRowSorter;
 import javax.swing.JButton;
-import logic.DataSource;
-import logic.GenericDAO;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableRowSorter;
+import logic.db.DataSource;
+import logic.db.GenericDAO;
 import logic.Logger;
 import logic.Strings;
 import logic.entites.Order;
@@ -31,14 +41,24 @@ public class ProductCrudAction extends BasicAction {
     private Map<Product, Integer> myCart;
     private JButton jButtonCart;
     private JButton jButtonOrder;
+    private BasicEditorPanel orderEditor;
 
-    public ProductCrudAction(BasicEditor editor) {
+    public ProductCrudAction(BasicEditorPanel editor, BasicEditorPanel orderEditor) {
         super(editor);
 
         myCart = new HashMap();
-
+        this.orderEditor = orderEditor;
         addButtons();
 
+        editor.getTable().getModel().addTableModelListener(tableModifiedListener);
+        
+        List<RowSorter.SortKey> sortKeys
+                = new ArrayList();
+        sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
+        sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+
+        editor.getTableSorter().setSortKeys(sortKeys);
+  
         setEditAble(0);
         setEditAble(1);
         setEditAble(2);
@@ -47,9 +67,14 @@ public class ProductCrudAction extends BasicAction {
         setEditAble(6);
     }
 
-    private void setEditAble(int col) {
-        ((GenericTableModel<Product, GenericDAO<Product>>) editor.getTable().getModel()).setColumnEditAble(col);
-    }
+    private final TableModelListener tableModifiedListener = new TableModelListener() {
+
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            ((GenericTableModel<Order, GenericDAO<Order>>) orderEditor.getTable().getModel()).fireTableDataChanged();
+        }
+
+    };
 
     private void addButtons() {
 
@@ -75,17 +100,22 @@ public class ProductCrudAction extends BasicAction {
 
         jButtonCart.setAction(cartAction());
 
-        jButtonCart.setEnabled(false);
-
         editor.addButton(jButtonCart);
 
         jButtonOrder = new JButton(Strings.MY_CART);
 
         jButtonOrder.setAction(orderAction());
 
-        jButtonOrder.setEnabled(false);
-
         editor.addButton(jButtonOrder);
+
+        setCartEnabled(false);
+
+    }
+
+    private void setCartEnabled(boolean b) {
+        jButtonCart.setEnabled(b);
+        jButtonOrder.setEnabled(b);
+
     }
 
     public Action cartAction() {
@@ -115,9 +145,9 @@ public class ProductCrudAction extends BasicAction {
                             setCartNumber();
 
                         } else {
-                            
+
                             MainFrame.showError(Strings.ERROR_NOT_ACTIVE);
-                            
+
                         }
 
                     }
@@ -155,15 +185,19 @@ public class ProductCrudAction extends BasicAction {
 
                         } else {
 
+                            order.setDate(Calendar.getInstance().getTime());
+
                             Logger.log(Strings.SAVE_DATA, "DEBUG");
 
-                            ((GenericTableModel<Order, GenericDAO<Order>>) editor.getTable().getModel()).create((Order) addOrdertPanel.getModel());
+                            ((GenericTableModel<Order, GenericDAO<Order>>) orderEditor.getTable().getModel()).create((Order) addOrdertPanel.getModel());
 
                         }
-                        
+
                         myCart.clear();
 
                         setCartNumber();
+
+                        setCartEnabled(false);
                     }
 
                 } else {
@@ -184,8 +218,7 @@ public class ProductCrudAction extends BasicAction {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                jButtonCart.setEnabled(true);
-                jButtonOrder.setEnabled(true);
+                setCartEnabled(true);
 
                 myCart.clear();
 

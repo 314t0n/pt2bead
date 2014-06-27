@@ -130,7 +130,7 @@ public class Product implements Serializable, IEntity {
 
     @Override
     public String toString() {
-        return manufacturer + ", " + type + ", " + category + ", " + price + " egység. ";
+        return manufacturer + ", " + type + ", " + category + ", " + price + " egység. " + " " + getStock();
     }
 
   

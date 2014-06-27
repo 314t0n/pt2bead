@@ -1,5 +1,6 @@
-package logic;
+package logic.db;
 
+import logic.ICrudService;
 import logic.entites.Category;
 import logic.entites.Order;
 import logic.entites.Product;
