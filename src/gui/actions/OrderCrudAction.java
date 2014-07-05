@@ -24,7 +24,7 @@ import logic.entites.Product;
 /**
  * Rendelés Action-ök.
  *
- * @author ag313w
+ * @author  
  */
 public class OrderCrudAction extends BasicAction {
 

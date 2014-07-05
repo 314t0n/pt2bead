@@ -3,7 +3,7 @@ package logic;
 import java.util.List;
 /**
  * CRUD műveletek
- * @author ag313w
+ * @author  
  * @param <T> 
  */
 public interface ICrudService<T extends IEntity> {

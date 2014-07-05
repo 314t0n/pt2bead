@@ -9,7 +9,7 @@ import logic.entites.Category;
 /**
  * Új kategória panel
  * 
- * @author ag313w
+ * @author  
  */
 public class AddCategoryPanel extends DialogPanel {
 

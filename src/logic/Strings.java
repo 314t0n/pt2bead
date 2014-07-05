@@ -4,7 +4,7 @@ import javax.swing.Icon;
 
 /**
  * string resource
- * @author ag313w
+ * @author  
  */
 public class Strings {
 

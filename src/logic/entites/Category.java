@@ -14,7 +14,7 @@ import logic.IEntity;
 
 /**
  * 
- * @author ag313w
+ * @author  
  */
 @Entity
 public class Category implements Serializable, IEntity {

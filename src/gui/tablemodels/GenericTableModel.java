@@ -14,7 +14,7 @@ import org.eclipse.persistence.exceptions.DatabaseException;
  * Generikus táblamodel
  *
  *
- * @author ag313w
+ * @author  
  * @param <T> Az adott entitás
  * @param <S> és az ahhoz tartozó CRUD műveletek megvalósító adatbázis objetum
  */

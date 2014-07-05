@@ -8,7 +8,7 @@ import logic.exceptions.NegativeNumberException;
 import logic.exceptions.ZeroNumberException;
 /**
  * Egyszerű, szám érték panel
- * @author ag313w
+ * @author  
  */
 public class SingleNumberPanel extends DialogPanel {
 

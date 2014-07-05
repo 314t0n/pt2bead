@@ -31,7 +31,7 @@ import logic.entites.Product;
  *
  * 3 tabon: Rendelés, Termék, Kategória szerkesztő felületek
  *
- * @author ag313w
+ * @author  
  */
 public class MainFrame extends JFrame {
 

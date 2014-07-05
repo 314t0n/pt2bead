@@ -18,7 +18,7 @@ import logic.entites.Order;
 import logic.entites.Product;
 /**
  * 
- * @author ag313w
+ * @author  
  */
 public class AddOrderPanel extends DialogPanel {
 

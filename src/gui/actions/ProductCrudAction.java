@@ -29,7 +29,7 @@ import logic.entites.Product;
 
 /**
  * Termék Action-ök.
- * @author ag313w
+ * @author  
  */
 public class ProductCrudAction extends BasicAction {
 

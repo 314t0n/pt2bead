@@ -15,7 +15,7 @@ import logic.entites.Product;
 /**
  * Alapvető szerkesztési felülethez tartozó Action-ök.
  * 
- * @author ag313w
+ * @author  
  */
 abstract public class BasicAction {
 

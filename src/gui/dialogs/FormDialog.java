@@ -18,7 +18,7 @@ import logic.exceptions.NegativeNumberException;
  * 
  * Az űrlap panel injektálható
  * 
- * @author ag313w
+ * @author  
  */
 public class FormDialog extends JDialog implements ActionListener {
 

@@ -16,7 +16,7 @@ import logic.exceptions.NegativeNumberException;
 
 /**
  *
- * @author ag313w
+ * @author  
  */
 @Entity
 public class Product implements Serializable, IEntity {

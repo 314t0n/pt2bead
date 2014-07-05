@@ -21,7 +21,7 @@ import logic.IEntity;
  *
  * felvétel, szerkeszt, töröl gombokat, táblázatot amiben megjelennek az adatok.
  *
- * @author ag313w
+ * @author  
  * @param <T> IEntity típus
  * @param <S> CrudService típus
  */

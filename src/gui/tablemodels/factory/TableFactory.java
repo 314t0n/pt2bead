@@ -6,7 +6,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.TableRowSorter;
 /**
  * 
- * @author ag313w
+ * @author  
  */
 public class TableFactory {
     /**

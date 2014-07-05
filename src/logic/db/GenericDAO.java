@@ -14,7 +14,7 @@ import logic.ICrudService;
 import logic.IEntity;
 /**
  * Generikus CRUD műveleteket megvalósító DAO objektum
- * @author ag313w
+ * @author  
  * @param <T> entitás
  */
 public class GenericDAO<T extends IEntity> implements Serializable, ICrudService<T> {

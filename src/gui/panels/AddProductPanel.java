@@ -12,7 +12,7 @@ import logic.entites.Product;
 import logic.exceptions.NegativeNumberException;
 /**
  * 
- * @author ag313w
+ * @author  
  */
 public class AddProductPanel extends DialogPanel {
 

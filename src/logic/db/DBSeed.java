@@ -7,7 +7,7 @@ import java.sql.Statement;
 import logic.Logger;
 /**
  * Adatbázis feltöltése alap adatokkal
- * @author ag313w
+ * @author  
  */
 public class DBSeed {
 

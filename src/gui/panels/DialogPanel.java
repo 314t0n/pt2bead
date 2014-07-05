@@ -6,7 +6,7 @@ import logic.IEntity;
  * A formdialoghoz panel
  * 
  * 
- * @author ag313w
+ * @author  
  */
 public abstract class DialogPanel extends JPanel {
     /**

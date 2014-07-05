@@ -23,7 +23,7 @@ import logic.entites.Product;
 /**
  * Kategória szerkesztő felülethez tartozó Action-ök.
  * 
- * @author ag313w
+ * @author  
  */
 public class CategoryCrudAction extends BasicAction {
 

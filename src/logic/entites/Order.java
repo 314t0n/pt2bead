@@ -27,7 +27,7 @@ import logic.IEntity;
 
 /**
  * 
- * @author ag313w
+ * @author  
  */
 @Entity
 @Table(name = "Order_")

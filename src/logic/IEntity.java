@@ -1,7 +1,7 @@
 package logic;
 /**
  * Entitástól elvárt alapvetó műveletek
- * @author ag313w
+ * @author  
  */
 public interface IEntity {
 

@@ -8,7 +8,7 @@ import logic.IEntity;
 /**
  * Generikus táblák létrehozása.
  * 
- * @author ag313w
+ * @author  
  */
 public class TableModelFactory {
 

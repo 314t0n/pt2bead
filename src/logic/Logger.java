@@ -1,7 +1,7 @@
 package logic;
 /**
  * Loggolás (a konzolra)
- * @author ag313w
+ * @author  
  */
 public class Logger {
 
