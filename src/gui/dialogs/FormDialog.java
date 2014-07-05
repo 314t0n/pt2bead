@@ -10,7 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import logic.Strings;
-import logic.exceptions.NegativNumberException;
+import logic.exceptions.NegativeNumberException;
 /**
  * Kitölthető űrlap dialog
  * 
@@ -76,7 +76,7 @@ public class FormDialog extends JDialog implements ActionListener {
                 answer = true;
                 setVisible(false);
 
-            } catch (NegativNumberException ex) {
+            } catch (NegativeNumberException ex) {
                 MainFrame.showError(ex.getMessage());
             } catch (NumberFormatException ex) {
                 MainFrame.showError(Strings.ERROR_NUMBER_FORMAT);

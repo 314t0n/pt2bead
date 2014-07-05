@@ -12,9 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import logic.IEntity;
+import logic.exceptions.NegativeNumberException;
 
 /**
- * 
+ *
  * @author ag313w
  */
 @Entity
@@ -89,6 +90,9 @@ public class Product implements Serializable, IEntity {
     }
 
     public void setPrice(Integer price) {
+        if (price < 0) {
+            throw new NegativeNumberException();
+        }
         this.price = price;
     }
 
@@ -97,6 +101,9 @@ public class Product implements Serializable, IEntity {
     }
 
     public void setStock(Integer stock) {
+        if (stock < 0) {
+            throw new NegativeNumberException();
+        }
         this.stock = stock;
     }
 
@@ -133,7 +140,6 @@ public class Product implements Serializable, IEntity {
         return manufacturer + ", " + type + ", " + category + ", " + price + " egység. " + " " + getStock();
     }
 
-  
     @Override
     public String[] getPropertyNames() {
         return new String[]{"gyártó", "típus", "leírás", "kategória", "ár", "raktárkészlet", "aktív-e"};
@@ -179,10 +185,10 @@ public class Product implements Serializable, IEntity {
                 this.category = (Category) value;
                 break;
             case 4:
-                this.price = (Integer) value;
+                this.setPrice((Integer) value);
                 break;
             case 5:
-                this.stock = (Integer) value;
+                this.setStock((Integer) value);
                 break;
             case 6:
                 this.active = (boolean) value;

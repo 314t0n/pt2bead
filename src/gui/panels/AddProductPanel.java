@@ -9,7 +9,7 @@ import javax.swing.JTextField;
 import logic.IEntity;
 import logic.entites.Category;
 import logic.entites.Product;
-import logic.exceptions.NegativNumberException;
+import logic.exceptions.NegativeNumberException;
 /**
  * 
  * @author ag313w
@@ -80,7 +80,7 @@ public class AddProductPanel extends DialogPanel {
 
     private void checkNumber() {
         if (Integer.parseInt(price.getText()) < 0) {
-            throw new NegativNumberException();
+            throw new NegativeNumberException();
         }
     }
 

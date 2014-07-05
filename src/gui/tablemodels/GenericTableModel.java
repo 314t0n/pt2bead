@@ -1,16 +1,19 @@
 package gui.tablemodels;
 
+import gui.MainFrame;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import logic.ICrudService;
 import logic.IEntity;
 import logic.Logger;
+import logic.exceptions.NegativeNumberException;
 import org.eclipse.persistence.exceptions.DatabaseException;
+
 /**
  * Generikus táblamodel
- * 
- *  
+ *
+ *
  * @author ag313w
  * @param <T> Az adott entitás
  * @param <S> és az ahhoz tartozó CRUD műveletek megvalósító adatbázis objetum
@@ -21,8 +24,9 @@ public class GenericTableModel<T extends IEntity, S extends ICrudService<T>> ext
     private final String[] columnNames;
     private List<T> items;
     private final boolean[] isEditAbleColumn;
+
     /**
-     * 
+     *
      * @param source ICrudService-t megvalósító DAO
      * @param columnNames propertyNames
      */
@@ -33,15 +37,17 @@ public class GenericTableModel<T extends IEntity, S extends ICrudService<T>> ext
         this.items = new ArrayList();
         this.readAll();
     }
+
     /**
      * Szerkeszthető oszlopok
-     * @param columnNumber 
+     *
+     * @param columnNumber
      */
     public void setColumnEditAble(int columnNumber) {
         try {
             isEditAbleColumn[columnNumber] = true;
         } catch (ArrayIndexOutOfBoundsException ex) {
-           Logger.log("Nem létező oszlop. (isEditAbleColumn)", "ERROR");
+            Logger.log("Nem létező oszlop. (isEditAbleColumn)", "ERROR");
         }
     }
 
@@ -84,14 +90,17 @@ public class GenericTableModel<T extends IEntity, S extends ICrudService<T>> ext
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        T item = items.get(rowIndex);
-        System.out.println(columnIndex);
-        item.set(columnIndex, aValue);
         try {
+            T item = items.get(rowIndex);
+            System.out.println(columnIndex);
+            item.set(columnIndex, aValue);
+
             source.update(item);
             fireTableCellUpdated(rowIndex, columnIndex);
         } catch (DatabaseException ex) {
             System.err.println(ex.getMessage());
+        } catch (NegativeNumberException ex) {
+            MainFrame.showError(ex.getMessage());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }

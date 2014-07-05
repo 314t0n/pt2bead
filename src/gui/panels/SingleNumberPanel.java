@@ -4,7 +4,7 @@ import java.awt.GridLayout;
 import javax.swing.JTextField;
 import logic.IEntity;
 import logic.Strings;
-import logic.exceptions.NegativNumberException;
+import logic.exceptions.NegativeNumberException;
 import logic.exceptions.ZeroNumberException;
 /**
  * Egyszerű, szám érték panel
@@ -34,7 +34,7 @@ public class SingleNumberPanel extends DialogPanel {
   
     private void checkNumber() {
         if (Integer.parseInt(number.getText()) < 0) {
-            throw new NegativNumberException();
+            throw new NegativeNumberException();
         } else if (Integer.parseInt(number.getText()) < 1) {
             throw new ZeroNumberException();
         }
